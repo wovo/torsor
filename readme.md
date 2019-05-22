@@ -1,3 +1,5 @@
+UNFINISHED - WORK IN PROGRESS 
+
 # Torsor
 
 a C++ one-header one-class library for expressing and enforcing
@@ -14,26 +16,26 @@ This very small library used the type system to help you prevent
 a class of erroneous operations. 
 It can also help to make an API simpler and more elegant.
 
-As I see it, a torsor is mathematical abstraction over a group 
+As I see it, a torsor is a mathematical abstraction over a group 
 (a set of values with associated operations) that assigns a special 
 meaning to one value. 
+
+The 
+[torsor wiki](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
+is not very readable for a non-mathematician,
+but this 
+[Torsors Made Easy] page (http://math.ucr.edu/home/baez/torsors.html)
+is quite readable.
 
 In terms of scales, for a value type that denotes a ratio scale value 
 (a value for which addition yields a value on the same scale), the
 torsor of that type is the corresponding interval scale 
 (anchored) type.
 
-The 
-[torsor wiki page](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
-is not very readable for a non-mathematician,
-but this 
-[Torsors Made Easy page ](http://math.ucr.edu/home/baez/torsors.html)
-is very readable.
-
 Examples of ratio scales and their corresponding torsors 
 (anchored interval scales) are:
 
-| T                         | torsor< T >                  |
+| ratio scale T             | interval scale torsor< T >   |
 |---------------------------|------------------------------|
 | temperature difference    | absolute temperature         |
 | distance vector           | location                     |
@@ -52,19 +54,19 @@ such meaningless operations at compile time.
 It is designed to have zero runtime overhead.
 
 ------------------------------------------------------------------------------
-## interface
+## Interface
 
 ------------------------------------------------------------------------------
-## timing example
+## Timing example
 
 Imagine a timing library for a small embedded system that uses the 
 type *duration* to express an amount of time. 
-It also has a function *now()* that
+It has a function *now()* that
 returns the current time, expressed as the time elapsed since
 some (undefined) epoch. 
 (For an embedded system the epoch could
 be the moment the system was last switched on.) 
-The type returned by *now()* should be *torsor<duration>*,
+The type returned by *now()* should be *torsor\<duration>*,
 because that type itself is not a duration, but the differnce
 between two such types is a duration.
 
@@ -107,9 +109,16 @@ duration time_to_run( F work ){
    return stop - start;
 };   
 ```
+The distinction between absolute time and moments in time can be found
+in the C++ [std::chrono](https://en.cppreference.com/w/cpp/chrono) library,
+but it does not generalise the concept of a ration value range and its 
+corresponding torsor (interval value range).
 
 ------------------------------------------------------------------------------
-## limitations
+## Graphics example
+
+------------------------------------------------------------------------------
+## Limitations
 
 average
 
