@@ -5,9 +5,9 @@ UNFINISHED - WORK IN PROGRESS
 a C++ one-header one-class library for expressing and enforcing
 the difference between relative and absolute (anchored) values
 
-2019-05-22
-
-wouter@voti.nl
+author: wouter@voti.nl<BR>
+last modified: 2019-05-22<BR>
+source license: boost<BR>
 
 ------------------------------------------------------------------------------
 ## Introduction
@@ -57,6 +57,20 @@ It is designed to have zero runtime overhead.
 ## Interface
 
 ------------------------------------------------------------------------------
+## Use
+
+The library is a single header file, so you can copy it to some
+suitable place where your compiler can find it and insert
+
+```C++
+#include <torsor.hpp>
+```
+
+in your source file(s).
+
+The file contains Doxygen comments.
+
+------------------------------------------------------------------------------
 ## Timing example
 
 Imagine a timing library for a small embedded system that uses the 
@@ -67,8 +81,8 @@ some (undefined) epoch.
 (For an embedded system the epoch could
 be the moment the system was last switched on.) 
 The type returned by *now()* should be *torsor\<duration>*,
-because that type itself is not a duration, but the differnce
-between two such types is a duration.
+because it is not a duration, 
+but the difference between two such values *is* a duration.
 
 ```C++
 using duration = ...
@@ -76,16 +90,21 @@ torsor< duration > now();
 ```
 
 Our timing library is likely to have a function that can be
-called to wait. In fact, it will likely have two such functions:
+called to wait some time. 
+In fact, it will likely have two such functions:
 one that takes and amount of time as argument and waits for that
 amount of time, and one that takes a moment in time as argument,
 and waits until that moment has arrived. 
 The argument of the first function is a *duration* (an amount of time),
 the argument of the second function is a *moment* in time.
-Hence the two functions can be overloaded.
+Making the argument of the second function a torsor 
+the two functions can be overloaded.
 
 ```C++
-void wait( duration );
+// wait for the specified amount of time
+void wait( duration ); 
+
+// wait untill the specified moment in time
 void wait( torsor< duration > );
 ```
 
@@ -97,7 +116,7 @@ auto a = now();
 auto b = now();
 a +  b: // won't compile
 ```
-This simple benchmark function shows that the difference bewteen two
+This simple benchmark function shows that the difference between two
 moments is a duration.
 
 ```C++
@@ -111,14 +130,44 @@ duration time_to_run( F work ){
 ```
 The distinction between absolute time and moments in time can be found
 in the C++ [std::chrono](https://en.cppreference.com/w/cpp/chrono) library,
-but it does not generalise the concept of a ration value range and its 
-corresponding torsor (interval value range).
+but that library does not generalise the concept of a 
+ratio value range and its corresponding torsor (interval value range).
 
 ------------------------------------------------------------------------------
 ## Graphics example
 
+A graphics library will have a type *location* that specifies 
+a place on the grahics screen. 
+A class that represents a rectangle object on the screen will
+take one argument to specify the start (upper left) point of the rectangle, 
+and one more argument. 
+But what does that second argument specify, the end (lower right) point,
+or the size of the rectangle 
+(the distance between the upper-left and lower-right points).
+Both are valid choices.
+
+When you realize that a location on the screen is actually the torsor
+of a distance on the screen, the two options can be provided by
+two constructors that different second arguments.
+
+```C++
+using distance = ...
+using location = torsor< distance >;
+
+class rectangle {
+   . . .
+public:
+   rectangle( location start, location end );
+   
+   rectangle( location start, distance size ): 
+      rectangle( start, start + size ){}
+}; 
+```
+
 ------------------------------------------------------------------------------
 ## Limitations
 
-average
-
+The operations on a torsor are limited to adding or subtracting a
+base type value, or subtraction two torsors to yield a base type value.
+As a colleague remarked, this makes it difficult to average 
+a number of torsor values, which is a perfectly sensible operation.
