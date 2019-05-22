@@ -2,12 +2,16 @@ UNFINISHED - WORK IN PROGRESS
 
 # Torsor
 
+![torsor pokemon card](http://www.mypokecard.com/my/galery/JWOi565xQRaB.jpg)
+
 a C++ one-header one-class library for expressing and enforcing
 the difference between relative and absolute (anchored) values
 
-author: wouter@voti.nl<BR>
-last modified: 2019-05-22<BR>
-source license: boost<BR>
+author: Wouter van Ooijen (wouter@voti.nl)<BR>
+source license: [boost]
+(https://www.boost.org/users/license.html)<BR>
+documentation license: [CC BY-SA 2.5]
+(https://creativecommons.org/licenses/by-sa/2.5/)<BR>
 
 ------------------------------------------------------------------------------
 ## Introduction
@@ -26,6 +30,9 @@ is not very readable for a non-mathematician,
 but this 
 [Torsors Made Easy] page (http://math.ucr.edu/home/baez/torsors.html)
 is quite readable.
+This [blog from The n-Category Cafe]
+(https://golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
+tries to be accessible, but I guess I am not part of the intended audience.
 
 In terms of scales, for a value type that denotes a ratio scale value 
 (a value for which addition yields a value on the same scale), the
@@ -35,11 +42,11 @@ torsor of that type is the corresponding interval scale
 Examples of ratio scales and their corresponding torsors 
 (anchored interval scales) are:
 
-| ratio scale T             | interval scale torsor< T >   |
-|---------------------------|------------------------------|
-| temperature difference    | absolute temperature         |
-| distance vector           | location                     |
-| duration                  | moment in time               |
+| ratio scale **T**         | interval scale **torsor< T >**   |
+|---------------------------|----------------------------------|
+| temperature difference    | absolute temperature             |
+| distance vector           | location                         |
+| duration                  | moment in time                   |
 
 In a unit system like SI a torsor and its ratio type have the 
 same unit. 
@@ -59,8 +66,9 @@ It is designed to have zero runtime overhead.
 ------------------------------------------------------------------------------
 ## Use
 
-The library is a single header file, so you can copy it to some
-suitable place where your compiler can find it and insert
+The library is the single header file library/torsor.hpp, 
+so you can copy it to some
+suitable place (where your compiler can find it) and insert
 
 ```C++
 #include <torsor.hpp>
@@ -71,7 +79,7 @@ in your source file(s).
 The file contains Doxygen comments.
 
 ------------------------------------------------------------------------------
-## Timing example
+## Usage example: timing
 
 Imagine a timing library for a small embedded system that uses the 
 type *duration* to express an amount of time. 
@@ -134,10 +142,10 @@ but that library does not generalise the concept of a
 ratio value range and its corresponding torsor (interval value range).
 
 ------------------------------------------------------------------------------
-## Graphics example
+## Usage example: rectangle
 
 A graphics library will have a type *location* that specifies 
-a place on the grahics screen. 
+a place on the graphics screen. 
 A class that represents a rectangle object on the screen will
 take one argument to specify the start (upper left) point of the rectangle, 
 and one more argument. 

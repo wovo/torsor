@@ -1,26 +1,39 @@
+// ==========================================================================
+//
+// torsor.hpp
+//
+// a C++ one-header one-class library for expressing and enforcing
+// the difference between relative and absolute (anchored) values
+//
+// https://www.github.com/wovo/torsor
+// 
+// Copyright Wouter van Ooijen - 2019
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// https://www.boost.org/LICENSE_1_0.txt)
+//
+// ==========================================================================
 
+#ifndef torsor_hpp
+#define torsor_hpp
+
+// this file contains Doxygen lines
+/// @file
 
 /// absolute version of an arithmetic value type
 ///
 /// For a value type that denotes a ratio scale value (a value
 /// for which addition yields a value on the same scale), the
-/// torsor of that type is the corresponding interval scale 
+/// torsor of that (base) type is the corresponding interval scale 
 /// (anchored) type.
 ///
-/// Examples of ratio scales and their corresponding anchored 
-/// interval scales are:temperature difference - absolute temperature
-/// distance vector - location
-/// duration - moment in time
-///
-/// In a unit system like SI a torsor and its ratio type have the 
-/// same unit. 
-/// But just like adding two values that have different SI units 
-/// makes no sense, adding two torsor values makes no sense.
-/// This torsor class template uses the type system to block
-/// such meaningless operations at compile time. 
-/// It is designed to have zero runtime overhead.
-///
-/// -
+/// The operations on the torsor are limited to: 
+/// - adding or subtracting a base type value (yields a torsor value)
+/// - subtracting two torsors (yields a base type value)
+/// - printing a torsor (prints @ followed by its base type value)
+/// 
+/// A the base type of a torsor must have a constructor that
+/// accepts a (single) 0 argument.
 template< typename T >
 class torsor {
 private:
@@ -47,4 +60,6 @@ public:
    }
    
 
-};
+}; // class torsor
+
+#endif // ifndef torsor_hpp
