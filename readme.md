@@ -66,7 +66,7 @@ More formally: the library provides a final class
 template *torsor/<typename B>*. 
 The type B must have a constructor that can be called with a single value 0.
 
-The class T = torsor<B> supports the following operations:
+The class T = torsor/<B> supports the following operations:
 
 - default constructor, copy constructor, assignment operator, destructor
 
@@ -80,7 +80,8 @@ The result is a torsor of the decltype( t op x ).
 they are available for B and X. 
 The result is a reference to the (modified) t.
 
-- for each t and torsor<C> c: ( t > c ), ( t >= c ), ( t < c ), ( t <= c ), ( t ==c ), ( t!= c )
+- for each t and torsor/<C> c: ( t > c ), ( t >= c ), ( t < c ), 
+( t <= c ), ( t ==c ), ( t!= c )
 <BR> These operators are provided if and only if
 they are available for B and C. 
 The result is the result of t op c.
@@ -151,13 +152,13 @@ two moments.
 ```C++
 auto a = now();
 auto b = now();
-a +  b: // won't compile
+a + b: // won't compile
 ```
 This simple benchmark function shows that the difference between two
 moments is a duration.
 
 ```C++
-< template F >
+template< typename F >
 duration time_to_run( F work ){
    auto start = now();
    work();
@@ -206,13 +207,14 @@ public:
 
 In his [talk at ACCU 2019](
 https://www.youtube.com/watch?v=nN5ya6oNImg)
-Mateusz Pusz' asked what (if anything) the is the sum of two temperatures,
+Mateusz Pusz' asked what (if anything) is the sum of two temperatures,
 for instance 10 degrees Celcius + 20 degrees Celcius?
 He proposed these possible answers:
    - 30 degrees Celcius
    - 303 degrees Celcius
-   - no meaning 
-He then gave arguments for all three answers.
+   - meaningless 
+   
+He then gave reasonable arguments for all three answers.
 
 With the torsor concept we can unravel this problem by first asking for
 more information: are those values to be interpreted as 
@@ -224,14 +226,14 @@ insist that in the future he writes them as N degrees
 (without the Celcius), because in that case X degrees 
 Celcius is the same as X degrees Kelvin.
 (Let's forget about Fahrenheit and Reaumur.)
-In that case, 10 degrees + 20 degrees is without any doubt 10 degrees.
+In that case, 10 degrees + 20 degrees is without any doubt 30 degrees.
 
-If the value are tosor (absolute) temperatures, adding them is meaningless,
+If the values are tosor (absolute) temperatures, adding them is meaningless,
 insofar that it doesn't produce an absolute temperature or a
 temperature difference. 
 One could argue that if the addition means something, it is that
 it produces something that:
-- when divided by 2, it yields an absolute (torsor) temperature
+- when divided by 2, yields an absolute (torsor) temperature
 - when you subtract an absolute (torsor) temperature from it, it
    yields an absolute (torsor) temperature.
    
@@ -239,7 +241,7 @@ I doubt that is usefull to anyone
 (but check the note at the end of this file about averaging).
 
 ------------------------------------------------------------------------------
-## Exdternal resources
+## External resources
 
 - The 
 [torsor wiki](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
@@ -254,7 +256,7 @@ tries to be accessible, but I guess I am not part of the intended audience.
 ------------------------------------------------------------------------------
 ## Limitations
 
-The operations on a torsor are limited to adding or subtracting a
+The torsor class limits the operations on a torsor are to adding or subtracting a
 base type value, or subtraction two torsors to yield a base type value.
 As a colleague remarked, this makes it difficult to average 
 a number of torsor values, which is a perfectly sensible operation.
