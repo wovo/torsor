@@ -8,13 +8,13 @@ the difference between relative and absolute (anchored) values
 wouter@voti.nl
 
 ------------------------------------------------------------------------------
-## introduction
+## Introduction
 
-This very small library is a tool to use the type system to prevent 
+This very small library used the type system to help you prevent 
 a class of erroneous operations. 
-It can also help to make an API simpler.
+It can also help to make an API simpler and more elegant.
 
-As I se it, a torsor is mathematical abstraction over a group 
+As I see it, a torsor is mathematical abstraction over a group 
 (a set of values with associated operations) that assigns a special 
 meaning to one value. 
 
@@ -22,6 +22,13 @@ In terms of scales, for a value type that denotes a ratio scale value
 (a value for which addition yields a value on the same scale), the
 torsor of that type is the corresponding interval scale 
 (anchored) type.
+
+The 
+[torsor wiki page](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
+is not very readable for a non-mathematician,
+but this 
+[Torsors Made Easy page ](http://math.ucr.edu/home/baez/torsors.html)
+is very readable.
 
 Examples of ratio scales and their corresponding torsors 
 (anchored interval scales) are:
@@ -48,10 +55,61 @@ It is designed to have zero runtime overhead.
 ## interface
 
 ------------------------------------------------------------------------------
-## example
+## timing example
 
-Imagine a timing library that uses the type duration to
-express an amount of time. It also has a function now() that
+Imagine a timing library for a small embedded system that uses the 
+type *duration* to express an amount of time. 
+It also has a function *now()* that
 returns the current time, expressed as the time elapsed since
-some (undefined) epoch. For an embedded system the epoch could
-be the moment the system was last switched on. 
+some (undefined) epoch. 
+(For an embedded system the epoch could
+be the moment the system was last switched on.) 
+The type returned by *now()* should be *torsor<duration>*,
+because that type itself is not a duration, but the differnce
+between two such types is a duration.
+
+```C++
+using duration = ...
+torsor< duration > now();
+```
+
+Our timing library is likely to have a function that can be
+called to wait. In fact, it will likely have two such functions:
+one that takes and amount of time as argument and waits for that
+amount of time, and one that takes a moment in time as argument,
+and waits until that moment has arrived. 
+The argument of the first function is a *duration* (an amount of time),
+the argument of the second function is a *moment* in time.
+Hence the two functions can be overloaded.
+
+```C++
+void wait( duration );
+void wait( torsor< duration > );
+```
+
+With these definitions a user can't make the mistake of adding
+two moments.
+
+```C++
+auto a = now();
+auto b = now();
+a +  b: // won't compile
+```
+This simple benchmark function shows that the difference bewteen two
+moments is a duration.
+
+```C++
+< template F >
+duration time_to_run( F work ){
+   auto start = now();
+   work();
+   auto stop = now();
+   return stop - start;
+};   
+```
+
+------------------------------------------------------------------------------
+## limitations
+
+average
+
