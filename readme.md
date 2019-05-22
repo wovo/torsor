@@ -4,13 +4,14 @@ UNFINISHED - WORK IN PROGRESS
 
 ![torsor pokemon card](http://www.mypokecard.com/my/galery/JWOi565xQRaB.jpg)
 
-a C++ one-header one-class library for expressing and enforcing
-the difference between relative and absolute (anchored) values
+This is a C++ one-header one-class library for expressing and enforcing
+the difference between relative and absolute (anchored) values.
+I hope it doesn't pozone you.
 
 author: Wouter van Ooijen (wouter@voti.nl)<BR>
 source license: [boost](
    https://www.boost.org/users/license.html)<BR>
-documentation license: [CC BY-SA 2.5](
+documentation license (this file): [CC BY-SA 2.5](
    https://creativecommons.org/licenses/by-sa/2.5/)<BR>
 
 ------------------------------------------------------------------------------
@@ -23,16 +24,6 @@ It can also help to make an API simpler and more elegant.
 As I see it, a torsor is a mathematical abstraction over a group 
 (a set of values with associated operations) that assigns a special 
 meaning to one value. 
-
-The 
-[torsor wiki](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
-is not very readable for a non-mathematician,
-but this 
-[Torsors Made Easy] page (http://math.ucr.edu/home/baez/torsors.html)
-is quite readable.
-This [blog from The n-Category Cafe]
-(https://golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
-tries to be accessible, but I guess I am not part of the intended audience.
 
 In terms of scales, for a value type that denotes a ratio scale value 
 (a value for which addition yields a value on the same scale), the
@@ -59,6 +50,19 @@ to add today and tomorrow, or now and 10 minutes ago.
 The torsor class template uses the type system to block
 such meaningless operations at compile time. 
 It is designed to have zero runtime overhead.
+
+------------------------------------------------------------------------------
+## Further reading
+
+The 
+[torsor wiki](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
+is not very readable for a non-mathematician,
+but this 
+[Torsors Made Easy](http://math.ucr.edu/home/baez/torsors.html) 
+page is quite readable.
+This [blog from The n-Category Cafe](
+https://golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
+tries to be accessible, but I guess I am not part of the intended audience.
 
 ------------------------------------------------------------------------------
 ## Interface
