@@ -1,5 +1,5 @@
-A torsor is a strengthening of the type system that prevents
-a certain class of erroneous operations. 
+A torsor is a tool to strengthen use the type system 
+to prevent a class of erroneous operations. 
 It can also help to make an API simpler.
 
 For a value type that denotes a ratio scale value (a value
@@ -12,8 +12,11 @@ interval scales are:
 
 +---------------------------+------------------------------+
 | T                         | torsor< T >                  |
++---------------------------+------------------------------+
 | temperature difference    | absolute temperature         |
++---------------------------+------------------------------+
 | distance vector           | location                     |
++---------------------------+------------------------------+
 | duration                  | moment in time               |
 +---------------------------+------------------------------+
 
