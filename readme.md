@@ -10,15 +10,11 @@ torsor of that type is the corresponding interval scale
 Examples of ratio scales and their corresponding anchored 
 interval scales are:
 
-+---------------------------+------------------------------+
 | T                         | torsor< T >                  |
-+---------------------------+------------------------------+
+|---------------------------|------------------------------|
 | temperature difference    | absolute temperature         |
-+---------------------------+------------------------------+
 | distance vector           | location                     |
-+---------------------------+------------------------------+
 | duration                  | moment in time               |
-+---------------------------+------------------------------+
 
 In a unit system like SI a torsor and its ratio type have the 
 same unit. 
