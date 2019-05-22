@@ -13,6 +13,7 @@ source license: [boost](
    https://www.boost.org/users/license.html)<BR>
 documentation license (this file): [CC BY-SA 2.5](
    https://creativecommons.org/licenses/by-sa/2.5/)<BR>
+requires: gcc > 6.2 with -fconcepts
 
 ------------------------------------------------------------------------------
 ## Introduction
@@ -80,7 +81,10 @@ suitable place (where your compiler can find it) and insert
 
 in your source file(s).
 
-The file contains Doxygen comments.
+The library uses concepts, so GCC 6.2 or later is required, 
+with the *-fconcepts* command-line flag.
+
+The file contains some minimal Doxygen comments.
 
 ------------------------------------------------------------------------------
 ## Usage example: timing
@@ -175,6 +179,42 @@ public:
       rectangle( start, start + size ){}
 }; 
 ```
+
+------------------------------------------------------------------------------
+## Usage example: temperature
+
+In his [talk at ACCU 2019](
+https://www.youtube.com/watch?v=nN5ya6oNImg)
+Mateusz Pusz' asked what (if anything) the is the sum of two temperatures,
+for instance 10 degrees Celcius + 20 degrees Celcius?
+He proposed these possible answers:
+   - 30 degrees Celcius
+   - 303 degrees Celcius
+   - no meaning 
+He then gave arguments for all three answers.
+
+With the torsor concept we can unravel this problem by first asking for
+more information: are those values to be interpreted as 
+temperature differences, or as absolute temperatures 
+(the torsor of temperature differences). 
+
+If they are temperature differences we must flog the author and
+insist that in the future he writes them as N degrees 
+(without the Celcius), because in that case X degrees 
+Celcius is the same as X degrees Kelvin.
+(Let's forget about Fahrenheit and Reaumur.)
+In that case, 10 degrees + 20 degrees is without any doubt 10 degrees.
+
+If the value are tosor (absolute) temperatures, adding them is meaningless,
+insofar that it doesn't produce an absolute temperature or a
+temperature difference. 
+One could argue that if the addition means something, it is that
+it produces something that:
+- when divided by 2, it yields an absolute (torsor) temperature
+- when you subtract an absolute (torsor) temperature from it, it
+   yields an absolute (torsor) temperature.
+I doubt that is usefull to anyone 
+(but check the note at the end of this file about averaging).
 
 ------------------------------------------------------------------------------
 ## Limitations
