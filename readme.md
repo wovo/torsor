@@ -8,10 +8,10 @@ a C++ one-header one-class library for expressing and enforcing
 the difference between relative and absolute (anchored) values
 
 author: Wouter van Ooijen (wouter@voti.nl)<BR>
-source license: [boost]
-(https://www.boost.org/users/license.html)<BR>
-documentation license: [CC BY-SA 2.5]
-(https://creativecommons.org/licenses/by-sa/2.5/)<BR>
+source license: [boost](
+   https://www.boost.org/users/license.html)<BR>
+documentation license: [CC BY-SA 2.5](
+   https://creativecommons.org/licenses/by-sa/2.5/)<BR>
 
 ------------------------------------------------------------------------------
 ## Introduction
