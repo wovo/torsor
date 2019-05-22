@@ -18,7 +18,7 @@ requires: gcc > 6.2 with -fconcepts
 ------------------------------------------------------------------------------
 ## Introduction
 
-This very small library used the type system to help you prevent 
+This very small library uses the type system to help you prevent 
 a class of erroneous operations. 
 It can also help to make an API simpler and more elegant.
 
@@ -53,20 +53,41 @@ such meaningless operations at compile time.
 It is designed to have zero runtime overhead.
 
 ------------------------------------------------------------------------------
-## Further reading
+## Interface summary
 
-The 
-[torsor wiki](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
-is not very readable for a non-mathematician,
-but this 
-[Torsors Made Easy](http://math.ucr.edu/home/baez/torsors.html) 
-page is quite readable.
-This [blog from The n-Category Cafe](
-https://golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
-tries to be accessible, but I guess I am not part of the intended audience.
+In simple terms: with a torsors you can 
 
-------------------------------------------------------------------------------
-## Interface
+- construct, destruct, assign
+- add and subtract things that can be added to or subtracted from its base
+- compare torsors, which means comparing their bases
+- subtract two torsors, which yields its base
+
+More formally: the library provides a final class 
+template *torsor/<typename B>*. 
+The type B must have a constructor that can be called with a single value 0.
+
+The class T = torsor<B> supports the following operations:
+
+- default constructor, copy constructor, assignment operator, destructor
+
+- for each T t and X x: ( t + x ), ( x + t ), ( t - x ), ( x - t )
+<BR> These operators are provided if and only if
+they are available for B and X.
+The result is a torsor of the decltype( t op x ).
+
+- for each T t and X x: ( t += x ), ( t -= x )
+<BR> These operators are provided if and only if
+they are available for B and X. 
+The result is a reference to the (modified) t.
+
+- for each t and torsor<C> c: ( t > c ), ( t >= c ), ( t < c ), ( t <= c ), ( t ==c ), ( t!= c )
+<BR> These operators are provided if and only if
+they are available for B and C. 
+The result is the result of t op c.
+
+All operators are const and constexpr, where appropriate.
+There are currently no exception annotations 
+(I work with -fno-exceptions).
 
 ------------------------------------------------------------------------------
 ## Use
@@ -213,8 +234,22 @@ it produces something that:
 - when divided by 2, it yields an absolute (torsor) temperature
 - when you subtract an absolute (torsor) temperature from it, it
    yields an absolute (torsor) temperature.
+   
 I doubt that is usefull to anyone 
 (but check the note at the end of this file about averaging).
+
+------------------------------------------------------------------------------
+## Exdternal resources
+
+- The 
+[torsor wiki](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
+is not very readable for a non-mathematician.
+- This 
+[Torsors Made Easy](http://math.ucr.edu/home/baez/torsors.html) 
+page is quite readable.
+- This [blog from The n-Category Cafe](
+https://golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
+tries to be accessible, but I guess I am not part of the intended audience.
 
 ------------------------------------------------------------------------------
 ## Limitations

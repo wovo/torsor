@@ -35,14 +35,14 @@
 /// A the base type of a torsor must have a constructor that
 /// accepts a (single) 0 argument.
 template< typename T >
-class torsor {
+class torsor final {
 private:
 
    T value;
    
 public:
 
-   torsor():value( 0 ){}
+   constexpr torsor():value( 0 ){}
    
    template< typename U >
    constexpr torsor operator+( const U & right ) const {
