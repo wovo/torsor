@@ -1,21 +1,27 @@
-UNFINISHED - WORK IN PROGRESS 
+# **UNFINISHED - WORK IN PROGRESS **
 
 # Torsor
 
-![torsor pokemon card](http://www.mypokecard.com/my/galery/JWOi565xQRaB.jpg)
-
 This is a C++ one-header one-class library for expressing and enforcing
 the difference between relative and absolute (anchored) values.
+
+<!---
+![torsor pokemon card](http://www.mypokecard.com/my/galery/JWOi565xQRaB.jpg)
 I hope it doesn't pozone you.
+-->
 
 author: Wouter van Ooijen (wouter@voti.nl)<BR>
+
 source license: [boost](
    https://www.boost.org/users/license.html)<BR>
+
 documentation license (this file): [CC BY-SA 2.5](
    https://creativecommons.org/licenses/by-sa/2.5/)<BR>
+
 requires: gcc > 6.2 with -fconcepts
 
 ------------------------------------------------------------------------------
+
 ## Introduction
 
 This very small library uses the type system to help you prevent 
@@ -53,6 +59,7 @@ such meaningless operations at compile time.
 It is designed to have zero runtime overhead.
 
 ------------------------------------------------------------------------------
+
 ## Interface summary
 
 In simple terms: with a torsors you can 
@@ -91,6 +98,7 @@ There are currently no exception annotations
 (I work with -fno-exceptions).
 
 ------------------------------------------------------------------------------
+
 ## Use
 
 The library is the single header file library/torsor.hpp, 
@@ -109,6 +117,7 @@ with the *-fconcepts* command-line flag.
 The file contains some minimal Doxygen comments.
 
 ------------------------------------------------------------------------------
+
 ## Usage example: timing
 
 Imagine a timing library for a small embedded system that uses the 
@@ -172,6 +181,7 @@ but that library does not generalise the concept of a
 ratio value range and its corresponding torsor (interval value range).
 
 ------------------------------------------------------------------------------
+
 ## Usage example: rectangle
 
 A graphics library will have a type *location* that specifies 
@@ -203,6 +213,7 @@ public:
 ```
 
 ------------------------------------------------------------------------------
+
 ## Usage example: temperature
 
 In his [talk at ACCU 2019](
@@ -241,6 +252,7 @@ I doubt that is usefull to anyone
 (but check the note at the end of this file about averaging).
 
 ------------------------------------------------------------------------------
+
 ## External resources
 
 - The 
@@ -254,6 +266,7 @@ https://golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html
 tries to be accessible, but I guess I am not part of the intended audience.
 
 ------------------------------------------------------------------------------
+
 ## Limitations
 
 The torsor class limits the operations on a torsor are to adding or subtracting a
