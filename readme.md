@@ -96,6 +96,8 @@ The result is the result of t op c.
 All operators are const and constexpr, where appropriate.
 There are currently no exception annotations 
 (I work with -fno-exceptions).
+The library itself doen't generate any exceptions, but
+the operations it does with the base type could.
 
 ------------------------------------------------------------------------------
 
@@ -151,7 +153,7 @@ the two functions can be overloaded.
 // wait for the specified amount of time
 void wait( duration ); 
 
-// wait untill the specified moment in time
+// wait until the specified moment in time
 void wait( torsor< duration > );
 ```
 
