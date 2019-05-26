@@ -128,7 +128,7 @@ private:
    // the stored base type value
    T value;
 
-   // create a non-zero torsor value
+   // create a (possibly non-zero) torsor value
    constexpr torsor( const T & value ):
       value( value )
    {}

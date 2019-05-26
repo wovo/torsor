@@ -3,7 +3,7 @@
 # Torsor
 
 This is a C++ one-header one-class library for expressing and enforcing
-the difference between relative and absolute (anchored) values.
+the difference between relative and absolute (anchored) values, aka torsors.
 
 <!---
 ![torsor pokemon card](http://www.mypokecard.com/my/galery/JWOi565xQRaB.jpg)
@@ -62,7 +62,7 @@ It is designed to have zero runtime overhead.
 
 ## Interface summary
 
-In simple terms: with a torsors you can 
+In simple terms: with a torsor you can 
 
 - construct, destruct, assign
 - add and subtract things that can be added to or subtracted from its base
@@ -260,12 +260,18 @@ I doubt that is usefull to anyone
 - The 
 [torsor wiki](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
 is not very readable for a non-mathematician.
+
 - This 
 [Torsors Made Easy](http://math.ucr.edu/home/baez/torsors.html) 
 page is quite readable.
+
 - This [blog from The n-Category Cafe](
 https://golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
 tries to be accessible, but I guess I am not part of the intended audience.
+
+- [This page](https://ncatlab.org/nlab/show/torsor) gives the slogan
+"A torsor is like a group that has forgotten its neutral element."
+Otherwise I found it hard to read.
 
 ------------------------------------------------------------------------------
 
@@ -275,3 +281,19 @@ The torsor class limits the operations on a torsor are to adding or subtracting 
 base type value, or subtraction two torsors to yield a base type value.
 As a colleague remarked, this makes it difficult to average 
 a number of torsor values, which is a perfectly sensible operation.
+
+With the current installation, you can't use torsor< torsor< T >>, because
+a torsor requires its base type to have a constructor that accepts 0
+as a parameter. => zou wel moeten kunnen!
+
+------------------------------------------------------------------------------
+
+## To do list
+
+- find a torsor picture
+
+- test with pandoc on windows
+
+- add non-compiling tests using the "detection idiom"
+
+- create wtest or similar

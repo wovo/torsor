@@ -4,16 +4,14 @@ else
    CPP := c++
 endif
 
-.PHONY: build run docs
-
-build: tests.exe
+.PHONY: tests docs
 
 tests.exe: library/torsor.hpp tests/tests.cpp
 	$(CPP) tests/tests.cpp -Ilibrary -o tests.exe -std=c++17 -fconcepts
 
-run: main.exe
-	./main.exe
+tests: tests.exe
+	./tests.exe
 
 docs: 
 	Doxygen documentation/Doxyfile
-	pandoc -s -o documentation/readme.pdf readme.md
+	pandoc -V geometry:a4paper -s -o documentation/readme.pdf readme.md

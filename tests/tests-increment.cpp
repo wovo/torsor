@@ -27,30 +27,25 @@ struct dummy_multiply {
    }      
 };
 
-#define ERROR2( EXP, LINE ) \
-\
-struct bla {\
-\
-template< typename T >\
-requires requires( T x ) { \
-   ( x * EXP ); \
-}\
-bool f(){ return 1; }\
-\
-template< typename T >\
-bool f(){ return 0; }\
-\
-};\
-\
-if( bla().f< dummy_multiply >() ){ \
-   std::cout << '@' <<  __LINE__ << " : " << EXP << "\n"; \
-}\
 
-#define ERROR( EXP ) ERROR2( EXP, __LINE__ )
+template< typename Q >
+struct bla {
+   
+friend int operator ++( torsor< int >, int ){ return 42; }
+
+template< typename T >
+requires requires( T x ) { 
+   ( a + a ++ ); 
+}
+bool f(){ return 1; }
+
+template< typename T >
+bool f(){ return 0; }
+
+};
 
 int main(){
-   ERROR( a + b );
-//   std::cout << (  ) << "\n";   
+   std::cout << ( bla< torsor< int > >().f< dummy_multiply >() ) << "\n";   
 }
 
 /*

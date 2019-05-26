@@ -3,4 +3,4 @@ and the pdf version of the readme.md.
 
 Both will be generated in this directory.
 
-This requires Doxygen and pandoc.
+This requires Doxygen and pandoc, which (at least on Windows) requires TeX.
