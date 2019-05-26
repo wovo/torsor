@@ -2,8 +2,13 @@
 
 # Torsor
 
-This is a C++ one-header one-class library for expressing and enforcing
-the difference between relative and absolute (anchored) values, aka torsors.
+This is a very small C++ one-header one-class library 
+for expressing and enforcing the difference between relative 
+and absolute (anchored) values, aka torsors.
+Much like a unit system, this library uses the type system 
+to help you prevent some erroneous operations.
+It can also help to make an API simpler and more elegant. 
+By design, it has no runtime impact.
 
 <!---
 ![torsor pokemon card](http://www.mypokecard.com/my/galery/JWOi565xQRaB.jpg)
@@ -24,39 +29,81 @@ requires: gcc > 6.2 with -fconcepts
 
 ## Introduction
 
-This very small library uses the type system to help you prevent 
-a class of erroneous operations. 
-It can also help to make an API simpler and more elegant.
+We are used to numerical value types that can be 
+added, subtracted, multiplied, and divided. 
+But for some real-world values only a more limited 
+set of operations make sense.
 
-As I see it, a torsor is a mathematical abstraction over a group 
-(a set of values with associated operations) that assigns a special 
-meaning to one value. 
+The most illustrating example is perhaps time
+(as measured in some unit, let's assume seconds).
+There are two subtly distinct notions of time:
+
+- a duration (hwo long somehing took)
+- a moment in time (when something happened)
+
+It makes sense to add two durations 
+(10 seconds + 5 seconds = 15 seconds) but it makes no sense
+to add two moments, like today and tomorrow, or now and 10 minutes ago.
+Just as adding meters to seconds doesn't make any sense,
+adding two time moments doesn't make any sense.
+Subtracting two moments on the other hand does make sense,
+but the result is a duration, rather than a moment in time.
 
 In terms of scales, for a value type that denotes a ratio scale value 
 (a value for which addition yields a value on the same scale), the
 torsor of that type is the corresponding interval scale 
 (anchored) type.
 
+In mathematical terms, the set of moments in time is the
+*torsor* of the set of time durations.
+
 Examples of ratio scales and their corresponding torsors 
 (anchored interval scales) are:
 
 | ratio scale **T**         | interval scale **torsor< T >**   |
 |---------------------------|----------------------------------|
+| duration                  | moment in time                   |
 | temperature difference    | absolute temperature             |
 | distance vector           | location                         |
-| duration                  | moment in time                   |
 
-In a unit system like SI a torsor and its ratio type have the 
+Whether a scale is a torsor or not has nothing to do with its
+unit: in a unit system like SI a ratio type and its torsor have the 
 same unit. 
+
 But just like adding two values that have different SI units 
 makes no sense, adding two torsor values makes no sense.
-Consider time: it makes sense to add two durations 
-(10 seconds + 5 seconds = 15 seconds) but it makes no sense
-to add today and tomorrow, or now and 10 minutes ago.
-
 The torsor class template uses the type system to block
 such meaningless operations at compile time. 
 It is designed to have zero runtime overhead.
+
+Having different types for a ration scale and its torsor
+can make an API more elegant, because it makes the difference
+explicit in the type system, instead of requiring 
+functions with different names.
+
+------------------------------------------------------------------------------
+
+## Mathematical background
+
+As I understand it, a torsor is a mathematical abstraction over a group 
+(a set of values with associated operations) that assigns a special 
+meaning to one value.
+
+- The 
+[torsor wiki](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
+is not very readable for a non-mathematician.
+
+- This 
+[Torsors Made Easy](http://math.ucr.edu/home/baez/torsors.html) 
+page is quite readable.
+
+- This [blog from The n-Category Cafe](
+https://golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
+tries to be accessible, but I guess I am not part of the intended audience.
+
+- [This page](https://ncatlab.org/nlab/show/torsor) gives the slogan
+"A torsor is like a group that has forgotten its neutral element."
+Otherwise I found it hard to read.
 
 ------------------------------------------------------------------------------
 
@@ -70,28 +117,31 @@ In simple terms: with a torsor you can
 - subtract two torsors, which yields its base
 
 More formally: the library provides a final class 
-template *torsor/<typename B>*. 
+template *torsor\<typename B>*. 
 The type B must have a constructor that can be called with a single value 0.
 
-The class T = torsor/<B> supports the following operations:
+The class T = torsor\<B> supports the following operations:
 
-- default constructor, copy constructor, assignment operator, destructor
+- default constructor, copy constructor, assignment operator
 
 - for each T t and X x: ( t + x ), ( x + t ), ( t - x ), ( x - t )
-<BR> These operators are provided if and only if
-they are available for B and X.
-The result is a torsor of the decltype( t op x ).
+
+ These operators are provided if and only if
+ they are available for B and X.
+ The result is a torsor of the decltype( t op x ).
 
 - for each T t and X x: ( t += x ), ( t -= x )
-<BR> These operators are provided if and only if
-they are available for B and X. 
-The result is a reference to the (modified) t.
+
+ These operators are provided if and only if
+ they are available for B and X. 
+ The result is a reference to the (modified) t.
 
 - for each t and torsor/<C> c: ( t > c ), ( t >= c ), ( t < c ), 
 ( t <= c ), ( t ==c ), ( t!= c )
-<BR> These operators are provided if and only if
-they are available for B and C. 
-The result is the result of t op c.
+
+ These operators are provided if and only if
+ they are available for B and C. 
+ The result is the result of t op c.
 
 All operators are const and constexpr, where appropriate.
 There are currently no exception annotations 
@@ -252,26 +302,6 @@ it produces something that:
    
 I doubt that is usefull to anyone 
 (but check the note at the end of this file about averaging).
-
-------------------------------------------------------------------------------
-
-## External resources
-
-- The 
-[torsor wiki](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
-is not very readable for a non-mathematician.
-
-- This 
-[Torsors Made Easy](http://math.ucr.edu/home/baez/torsors.html) 
-page is quite readable.
-
-- This [blog from The n-Category Cafe](
-https://golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
-tries to be accessible, but I guess I am not part of the intended audience.
-
-- [This page](https://ncatlab.org/nlab/show/torsor) gives the slogan
-"A torsor is like a group that has forgotten its neutral element."
-Otherwise I found it hard to read.
 
 ------------------------------------------------------------------------------
 
