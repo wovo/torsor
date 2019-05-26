@@ -125,10 +125,9 @@ The class T = torsor\<B> supports the following operations:
 - default constructor, copy constructor, assignment operator
 
 - for each T t and X x: ( t + x ), ( x + t ), ( t - x ), ( x - t )
-
- These operators are provided if and only if
- they are available for B and X.
- The result is a torsor of the decltype( t op x ).
+  These operators are provided if and only if
+they are available for B and X.
+The result is a torsor of the decltype( t op x ).
 
 - for each T t and X x: ( t += x ), ( t -= x )
 
