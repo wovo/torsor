@@ -111,37 +111,39 @@ Otherwise I found it hard to read.
 
 In simple terms: with a torsor you can 
 
-- construct, destruct, assign
+- construct, copy, assign
 - add and subtract things that can be added to or subtracted from its base
-- compare torsors, which means comparing their bases
-- subtract two torsors, which yields its base
+- compare torsors, which means comparing their base values
+- subtract two torsors, which yields its base type
 
 More formally: the library provides a final class 
 template *torsor\<typename B>*. 
 The type B must have a constructor that can be called with a single value 0.
 
-The class T = torsor\<B> supports the following operations:
+The library supports the following operations:
 
 - default constructor, copy constructor, assignment operator
 
-- for each T t and X x: ( t + x ), ( x + t ), ( t - x ), ( x - t )
+- for each torsor\< B > t and X x: ( t + x ), ( x + t ), ( t - x ), ( x - t )
   
   These operators are provided if and only if
 they are available for B and X.
-The result is a torsor of the decltype( t op x ).
+The result is a torsor of the decltype( t op x ) or ( x op t).
 
-- for each T t and X x: ( t += x ), ( t -= x )
+- for each torsor\< B > t and X x: ( t += x ), ( t -= x )
 
   These operators are provided if and only if
 they are available for B and X. 
-The result is a reference to the (modified) t.
+The result is a reference to the (appropriately modified) t.
 
-- for each t and torsor/<C> c: ( t > c ), ( t >= c ), ( t < c ), 
-( t <= c ), ( t ==c ), ( t!= c )
+- for each torsor\< B > b and torsor\< C > c: 
+( b > c ), ( b >= c ), ( b < c ), 
+( b <= c ), ( b == c ), ( b != c )
 
   These operators are provided if and only if
 they are available for B and C. 
-The result is the result of t op c.
+The result is the result of the same comparison
+on the base value: ( t op c ) or (c op t ).
 
 All operators are const and constexpr, where appropriate.
 There are currently no exception annotations 
@@ -166,7 +168,15 @@ in your source file(s).
 The library uses concepts, so GCC 6.2 or later is required, 
 with the *-fconcepts* command-line flag.
 
-The file contains some minimal Doxygen comments.
+The torsor.hpp file contains Doxygen comments.
+The command
+'''
+make docs
+'''
+in the root directory generates the Doxygen pages
+(Doxygen required),
+and a pdf version of this file
+(pandoc required).
 
 ------------------------------------------------------------------------------
 
@@ -241,14 +251,18 @@ a place on the graphics screen.
 A class that represents a rectangle object on the screen will
 take one argument to specify the start (upper left) point of the rectangle, 
 and one more argument. 
-But what does that second argument specify, the end (lower right) point,
-or the size of the rectangle 
-(the distance between the upper-left and lower-right points).
+But what does that second argument specify; 
+
+- the end (lower right) point, or 
+
+- the size of the rectangle 
+(the distance between the upper-left and lower-right points)?
+
 Both are valid choices.
 
 When you realize that a location on the screen is actually the torsor
 of a distance on the screen, the two options can be provided by
-two constructors that different second arguments.
+two constructors that take different second arguments.
 
 ```C++
 using distance = ...
@@ -273,9 +287,12 @@ https://www.youtube.com/watch?v=nN5ya6oNImg)
 Mateusz Pusz' asked what (if anything) is the sum of two temperatures,
 for instance 10 degrees Celcius + 20 degrees Celcius?
 He proposed these possible answers:
-   - 30 degrees Celcius
-   - 303 degrees Celcius
-   - meaningless 
+
+ - 30 degrees Celcius
+ 
+ - 303 degrees Celcius
+ 
+ - meaningless 
    
 He then gave reasonable arguments for all three answers.
 
@@ -287,16 +304,20 @@ temperature differences, or as absolute temperatures
 If they are temperature differences we must flog the author and
 insist that in the future he writes them as N degrees 
 (without the Celcius), because in that case X degrees 
-Celcius is the same as X degrees Kelvin.
+Celcius is the same as X degrees Kelvin,
+so appending 'Celcius' or 'Kelvin' is misleading.
 (Let's forget about Fahrenheit and Reaumur.)
 In that case, 10 degrees + 20 degrees is without any doubt 30 degrees.
 
 If the values are tosor (absolute) temperatures, adding them is meaningless,
 insofar that it doesn't produce an absolute temperature or a
 temperature difference. 
-One could argue that if the addition means something, it is that
+
+One could argue that if the addition means anything, it is that
 it produces something that:
+
 - when divided by 2, yields an absolute (torsor) temperature
+
 - when you subtract an absolute (torsor) temperature from it, it
    yields an absolute (torsor) temperature.
    
@@ -307,14 +328,16 @@ I doubt that is usefull to anyone
 
 ## Limitations
 
-The torsor class limits the operations on a torsor are to adding or subtracting a
-base type value, or subtraction two torsors to yield a base type value.
+The torsor class limits the operations on a torsor 
+to adding or subtracting a base type value, 
+or subtraction two torsors to yield a base type value.
 As a colleague remarked, this makes it difficult to average 
 a number of torsor values, which is a perfectly sensible operation.
 
-With the current installation, you can't use torsor< torsor< T >>, because
-a torsor requires its base type to have a constructor that accepts 0
-as a parameter. => zou wel moeten kunnen!
+With the current installation, 
+you can't use torsor\< torsor\< T >>, because
+a torsor requires its base type to have a constructor that accepts
+as a parameter. 
 
 ------------------------------------------------------------------------------
 
@@ -322,8 +345,4 @@ as a parameter. => zou wel moeten kunnen!
 
 - find a torsor picture
 
-- test with pandoc on windows
-
-- add non-compiling tests using the "detection idiom"
-
-- create wtest or similar
+- add non-compiling tests using the "detection idiom" or concepts
