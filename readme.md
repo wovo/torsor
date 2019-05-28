@@ -19,11 +19,11 @@ I hope it doesn't pozone you.
 
 > Wouter van Ooijen (wouter@voti.nl)
 
-### Licneses
+### Licencesing
 
 > source license [boost](https://www.boost.org/users/license.html)
 > documentation license (this file and te other .md files): [CC BY-SA 2.5](
-   https://creativecommons.org/licenses/by-sa/2.5/)<BR>
+https://creativecommons.org/licenses/by-sa/2.5/)<BR>
 
 ### Requires
 
