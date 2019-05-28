@@ -2,6 +2,8 @@
 
 # Torsor
 
+### Summary
+
 This is a very small C++ one-header one-class library 
 for expressing and enforcing the difference between relative 
 and absolute (anchored) values, aka torsors.
@@ -22,6 +24,7 @@ I hope it doesn't pozone you.
 ### Licencesing
 
 > source license [boost](https://www.boost.org/users/license.html)
+
 > documentation license (this file and te other .md files): [CC BY-SA 2.5](
 https://creativecommons.org/licenses/by-sa/2.5/)<BR>
 
@@ -31,7 +34,7 @@ https://creativecommons.org/licenses/by-sa/2.5/)<BR>
 
 ------------------------------------------------------------------------------
 
-## Introduction
+# Introduction
 
 We are used to numerical value types that can be 
 added, subtracted, multiplied, and divided. 
