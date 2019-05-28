@@ -1,6 +1,6 @@
-**UNFINISHED - WORK IN PROGRESS **
+# ** UNFINISHED - WORK IN PROGRESS **
 
-** Torsor **
+# Torsor
 
 This is a very small C++ one-header one-class library 
 for expressing and enforcing the difference between relative 
@@ -21,17 +21,17 @@ I hope it doesn't pozone you.
 
 ### Licneses
 
->> source license [boost](https://www.boost.org/users/license.html)
-	+ documentation license (this file and te other .md files): [CC BY-SA 2.5](
+> source license [boost](https://www.boost.org/users/license.html)
+> documentation license (this file and te other .md files): [CC BY-SA 2.5](
    https://creativecommons.org/licenses/by-sa/2.5/)<BR>
 
 ### Requires
 
-	+ gcc > 6.2 (I used GCC/MinGW 7.3.0) with -fconcepts
+> gcc > 6.2 (I used GCC/MinGW 7.3.0) with -fconcepts
 
 ------------------------------------------------------------------------------
 
-# Introduction
+## Introduction
 
 We are used to numerical value types that can be 
 added, subtracted, multiplied, and divided. 
