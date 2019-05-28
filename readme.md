@@ -15,20 +15,20 @@ By design, it has no runtime impact.
 I hope it doesn't pozone you.
 -->
 
-## author: 
+### author: 
 
-Wouter van Ooijen (wouter@voti.nl)
+   Wouter van Ooijen (wouter@voti.nl)
 
-## Licese
+### Licese
 
 [boost](https://www.boost.org/users/license.html)
 
 documentation license (this file and te other .md files): [CC BY-SA 2.5](
    https://creativecommons.org/licenses/by-sa/2.5/)<BR>
 
-## Requires
+### Requires
 
-gcc > 6.2 (I used GCC/MinGW 7.3.0) with -fconcepts
+   gcc > 6.2 (I used GCC/MinGW 7.3.0) with -fconcepts
 
 ------------------------------------------------------------------------------
 
