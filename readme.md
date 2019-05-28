@@ -357,7 +357,16 @@ a number of torsor values, which is a perfectly sensible operation.
 With the current installation, 
 you can't use torsor\< torsor\< T >>, because
 a torsor requires its base type to have a constructor that accepts
-as a parameter. 
+0 as its (only) parameter. 
+This is because built-in types like int and double require
+this 0 tio be initialized, but a user shouldn't have the option
+to initialize a torsor to a specific value. 
+The constructor could accept an int and ignore its value,
+but that would allow a misleading construction like
+
+```C++
+   torsor< int > t( 15 );
+```
 
 ------------------------------------------------------------------------------
 
