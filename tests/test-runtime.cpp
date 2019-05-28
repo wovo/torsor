@@ -1,8 +1,8 @@
 // ==========================================================================
 //
-// main.hpp
+// test-runtime.hpp
 //
-// torsor tests
+// torsor runtime tests
 //
 // https://www.github.com/wovo/torsor
 // 
@@ -14,67 +14,17 @@
 // ==========================================================================
 
 #include <iostream>
-#include <experimental/type_traits>
 #include "torsor.hpp"
 
-torsor< int > a;
-int b;
 
-struct dummy_multiply {
-   template< typename T >
-   auto operator * ( const T & x ){
-      return x;
-   }      
-};
-
-struct bla {
-
-template< typename T >
-requires requires( T x ) { 
-   ( x * a ); 
-}
-bool f(){ return 1; }
-
-template< typename T >
-bool f(){ return 0; }
-
-};
-
-int main(){
-   std::cout << ( bla().f< dummy_multiply >() ) << "\n";   
-}
-
-/*
-ERROR( a /+ b )
-ERROR2( -, a )
-ERROR( a + b )
-*/
+// ==========================================================================
+//
+// simple test framework
+//
+// ==========================================================================
 
 int tests_total = 0;
 int tests_failed = 0;
-
-template <class T, class U>
-using equality_t = decltype(std::declval<T>() + std::declval<U>());
-
-template <class T, class U>
-using supports_equality = std::experimental::is_detected<equality_t, T, U>;
-
-int ymain(){
-   std::cout << ( supports_equality< torsor< int >, int >::value ) << "\n";   
-}
-
-namespace test {
-   auto operator+( const torsor< int > & a, const int & b ){
-      return supports_equality< decltype( a ), decltype( b ) >::value;      
-   }      
-   auto value(){
-      return a + b;
-   }      
-}
-
-int zmain(){
-   std::cout << ( test::value() ) << "\n";   
-}
 
 template< typename A, typename B >
 void test_ok( 
@@ -85,7 +35,7 @@ void test_ok(
 ){
    ++tests_total;	
    if( ! ok ){
-	  ++tests_failed;
+      ++tests_failed;
       std::cout 
          << f << ":" << std::dec << n 
          << " check failed \n" 
@@ -101,19 +51,28 @@ void test_ok(
 #define TEST_NOT_EQUAL( a, b ) \
    test_ok( (a) != (b), __FILE__, __LINE__, #a, #b, a, b );   
 
-void test_end(){
+int test_end(){
    if( tests_failed == 0 ){
       std::cout 
-	     << "\nTest success: " 
+	     << "\nRuntime test success: " 
 		 << std::dec << tests_total
-		 << " test were successfull\n";
+		 << " test(s) were successfull\n";
+      return 0;
    } else {	   
       std::cout 
-	     << "\nTEST FAILURE: " 
+	     << "\nRUNTIME TEST FAILURE: " 
 		 << std::dec << tests_failed
-		 << " test were NOT successfull\n";
+		 << " test(s) were NOT successfull\n";
+      return -1;
    }
 }
+
+
+// ==========================================================================
+//
+// the tests 
+//
+// ==========================================================================
 
 void test_constructor(){
    torsor< int > a;
@@ -125,22 +84,8 @@ void test_constructor(){
    TEST_EQUAL( a, b );
 }
 
-int xmain(){
+int main(){
    test_constructor();
 
-
-/*
-
-   int b;
-   torsor< float > f;
-   int *p;
-   struct {} s;
-   a + b;
-   a + p;
-   //a + s;
-   a - f;
-   std::cout << a + 7;
-*/
-
-   test_end();
+   return test_end();
 }

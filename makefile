@@ -4,13 +4,18 @@ else
    CPP := c++
 endif
 
+CPPX := $(CPP) -std=c++17 -fconcepts -Ilibrary
+
 .PHONY: tests docs
 
-tests.exe: library/torsor.hpp tests/tests.cpp
-	$(CPP) tests/tests.cpp -Ilibrary -o tests.exe -std=c++17 -fconcepts
+test-compilation.exe: library/torsor.hpp tests/test-compilation.cpp
+	$(CPPX) tests/test-compilation.cpp -o test-compilation.exe 
 
-tests: tests.exe
-	./tests.exe
+test-runtime.exe: library/torsor.hpp tests/test-runtime.cpp
+	$(CPPX) tests/test-runtime.cpp -o test-runtime.exe 
+
+tests: test-compilation.exe test-runtime.exe
+	./test-compilation.exe && ./test-runtime.exe
 
 docs: 
 	Doxygen documentation/Doxyfile
