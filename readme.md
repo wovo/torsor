@@ -32,6 +32,11 @@ https://creativecommons.org/licenses/by-sa/2.5/)<BR>
 
 > gcc > 6.2 (I used GCC/MinGW 7.3.0) with -fconcepts
 
+### Gitprint
+
+[Gitprint-formatted version of this document](
+https://gitprint.com/wovo/torsor/blob/master/readme.md)
+
 ------------------------------------------------------------------------------
 
 # Introduction
@@ -45,13 +50,13 @@ The most illustrating example is perhaps time
 (as measured in some unit, let's assume seconds).
 There are two subtly distinct notions of time:
 
-- a duration (hwo long somehing took)
+- a duration (how long somehing took)
 - a moment in time (when something happened)
 
 It makes sense to add two durations 
 (10 seconds + 5 seconds = 15 seconds) but it makes no sense
 to add two moments, like today and tomorrow, or now and 10 minutes ago.
-Just as adding meters to seconds doesn't make any sense,
+Just like adding meters to seconds doesn't make any sense,
 adding two time moments doesn't make any sense.
 Subtracting two moments on the other hand does make sense,
 but the result is a duration, rather than a moment in time.
@@ -74,7 +79,7 @@ Examples of ratio scales and their corresponding torsors
 | distance vector           | location                         |
 
 Whether a scale is a torsor or not has nothing to do with its
-unit: in a unit system like SI a ratio type and its torsor have the 
+unit: in a unit system (like SI) a ratio type and its torsor have the 
 same unit. 
 
 But just like adding two values that have different SI units 
@@ -119,8 +124,11 @@ Otherwise I found it hard to read.
 In simple terms: with a torsor you can 
 
 - construct, copy, assign
+
 - add and subtract things that can be added to or subtracted from its base
+
 - compare torsors, which means comparing their base values
+
 - subtract two torsors, which yields its base type
 
 More formally: the library provides a final class 
@@ -131,20 +139,25 @@ The library supports the following operations:
 
 - default constructor, copy constructor, assignment operator
 
-- for each torsor\< B > t and X x: ( t + x ), ( x + t ), ( t - x ), ( x - t )
+- for each torsor\< B > t and X x: 
+
+  ( t + x ), ( x + t ), ( t - x ), ( x - t )
   
   These operators are provided if and only if
 they are available for B and X.
 The result is a torsor of the decltype( t op x ) or ( x op t).
 
-- for each torsor\< B > t and X x: ( t += x ), ( t -= x )
+- for each torsor\< B > t and X x: 
+
+  ( t += x ), ( t -= x )
 
   These operators are provided if and only if
 they are available for B and X. 
 The result is a reference to the (appropriately modified) t.
 
 - for each torsor\< B > b and torsor\< C > c: 
-( b > c ), ( b >= c ), ( b < c ), 
+
+  ( b > c ), ( b >= c ), ( b < c ), 
 ( b <= c ), ( b == c ), ( b != c )
 
   These operators are provided if and only if
