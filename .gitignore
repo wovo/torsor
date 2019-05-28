@@ -16,7 +16,7 @@ __codelite.workspace
 *.pdf
 *.html
 *.aux
-text2pdf*/
+tex2pdf*/
 _dummy.jpg
 bmptk_*_stack.c
 _push.bat
