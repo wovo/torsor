@@ -39,8 +39,8 @@ and feedback is of course also welcomed.
 
 ### Gitprint 
 
-> [Gitprint-formatted version of this document](
-https://gitprint.com/wovo/torsor/blob/master/readme.md)
+> [Gitprint-formatted version](
+https://gitprint.com/wovo/torsor/blob/master/readme.md) of this document
 
 ------------------------------------------------------------------------------
 
@@ -386,4 +386,5 @@ but that would allow a misleading construction like
 # To do list
 
 - find a nice torsor picture that isn't a user-defined pokemon
+- copyright fromatrs wrong in pandoc
 
