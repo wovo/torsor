@@ -32,13 +32,23 @@
 //
 // ==========================================================================
 
+// hide te type if the right hand side of * 
+// to prevent a premature compiler errorn 
+// (is this a compiler bug?)
 struct dummy_multiply {
+	
    template< typename T >
-   auto operator * ( const T & x ){
+   const T & operator * ( const T & x ){
       return x;
+   }      
+   
+   template< typename T >
+   T & operator * ( T & x ){
+      return & x;
    }      
 };
 
+// the results of the tests
 struct result {
    bool         expected;
    int          line;
@@ -52,6 +62,11 @@ int add( result r ){
 }
 
 #define CONCAT( A, B ) A ## B
+
+// Check if EXP is legal by using it in the requires clause
+// of the first f() template ( the one that returns 1):
+// if EXP turns out to be illegal the fallback is selected,
+// which returns 0.
 
 #define ERROR2( RES, LINE, EXP )                     \
                                                      \
@@ -114,14 +129,32 @@ int main(){
 //
 // ==========================================================================
 
-torsor< int > a;
-int b;
+torsor< int > _torsor;
+int _int;
 
-ALLOWED(  a = a      )
-ALLOWED(  a = b      ) // wrong
-ALLOWED(  a = a + b  )
-ALLOWED(  a = b + a  )
-ALLOWED(  a = b + b  ) // wrong
+ALLOWED(  _torsor  = _torsor              )
+ERROR(    _torsor  = _int                 ) 
+ALLOWED(             _torsor  + _int      )
+ALLOWED(  _torsor  = _torsor  + _int      )
+ALLOWED(  _torsor  = _int     + _torsor   )
+ERROR(    _torsor  = _int     + _int      ) 
 
-ALLOWED(      a + a  )
-ERROR(    a = a + a  )
+ALLOWED(             _torsor + _torsor    )
+ERROR(    _torsor  = _torsor + _torsor    )
+
+ALLOWED(  _torsor += _int                 )
+ERROR(    _torsor += _torsor              )
+ERROR(    _torsor += _torsor + _torsor    )
+
+ALLOWED(             _torsor  - _int      )
+ALLOWED(  _torsor  = _torsor  - _int      )
+ERROR(               _int     - _torsor   ) 
+
+ALLOWED(             _torsor - _torsor    )
+ERROR(    _torsor  = _torsor - _torsor    )
+ALLOWED(  _int     = _torsor - _torsor    )
+
+ALLOWED(  _torsor -= _int                 )
+ERROR(    _torsor -= _torsor              )
+ERROR(    _torsor -= _torsor + _torsor    )
+

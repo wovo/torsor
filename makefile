@@ -6,7 +6,7 @@ endif
 
 CPPX := $(CPP) -std=c++17 -fconcepts -Ilibrary
 
-.PHONY: tests build docs 
+.PHONY: run fail tests build docs 
 
 test-compilation.exe: library/torsor.hpp tests/test-compilation.cpp
 	$(CPPX) tests/test-compilation.cpp -o test-compilation.exe 
@@ -17,8 +17,15 @@ test-runtime.exe: library/torsor.hpp tests/test-runtime.cpp
 build: 
 	$(CPPX) tests/test-error-messages.cpp -o test-compiler-messages.exe 
 
+run: test-runtime.exe
+	./test-runtime.exe
+	
+fail: test-compilation.exe 
+	./test-compilation.exe 
+	
 tests: test-compilation.exe test-runtime.exe
-	./test-compilation.exe && ./test-runtime.exe
+	./test-compilation.exe
+	./test-runtime.exe
 
 docs: 
 	Doxygen documentation/Doxyfile

@@ -8,8 +8,10 @@ Torsor is a very small C++ one-header one-class library
 for expressing and enforcing the difference between relative 
 and absolute (anchored) values, aka torsors.
 Much like a unit system, this library uses the type system 
-to help you prevent some erroneous operations.
-It can also help to make an API simpler and more elegant. 
+to help you eliminate erroneous operations at compile-time.
+It can also help to make an API simpler and more elegant
+by making the difference between relative and absolute 
+values explicit in the type system.
 By design, it has no runtime impact.
 
 <!---
@@ -23,11 +25,16 @@ I hope it doesn't pozone you.
 
 ### Licensing
 
-> source license [boost](
+> copyright (C) Wouter van OOijen - 2019
+
+> source license: [boost](
 https://www.boost.org/users/license.html)
 
 > documentation license (this file and te other .md files): [CC BY-SA 2.5](
 https://creativecommons.org/licenses/by-sa/2.5/)
+
+> Though not required, I appriciate being informed of any use of tis libary,
+and feedback is of course also welcomed.
 
 ### Requires
 
@@ -35,7 +42,7 @@ https://creativecommons.org/licenses/by-sa/2.5/)
 
 ### Gitprint 
 
-[Gitprint-formatted version of this document](
+>> [Gitprint-formatted version of this document](
 https://gitprint.com/wovo/torsor/blob/master/readme.md)
 
 ------------------------------------------------------------------------------
@@ -45,18 +52,18 @@ https://gitprint.com/wovo/torsor/blob/master/readme.md)
 We are used to numerical value types that can be 
 added, subtracted, multiplied, and divided. 
 But for some real-world values only a more limited 
-set of operations make sense.
+set of operations makes sense.
 
 The most illustrating example is perhaps time
 (as measured in some unit, let's assume seconds).
 There are two subtly distinct notions of time:
 
-- a duration (how long somehing took)
+- a duration (how long something took)
 - a moment in time (when something happened)
 
 It makes sense to add two durations 
 (10 seconds + 5 seconds = 15 seconds) but it makes no sense
-to add two moments, like today and tomorrow, or now and 10 minutes ago.
+to add two moments ( today + tomorrow, or now + 10 minutes ago).
 Just like adding meters to seconds doesn't make any sense,
 adding two time moments doesn't make any sense.
 Subtracting two moments on the other hand does make sense,
@@ -91,12 +98,20 @@ It is designed to have zero runtime overhead.
 
 Having different types for a ration scale and its torsor
 can make an API more elegant, because it makes the difference
-explicit in the type system, instead of requiring 
+between relative and absolute values
+explicit in the type system, instead of requiring two 
 functions with different names.
 
 ------------------------------------------------------------------------------
 
 # Mathematical background
+
+The original notion of ratio, interval, ordinal and nominal scales
+was introduced by Stevens and later made more rigorous. 
+This [Wiki](en.wikipedia.org/wiki/Level_of_measurement)
+gives a good introduction.
+
+- unit theory
 
 As I understand it, a torsor is a mathematical abstraction over a group 
 (a set of values with associated operations) that assigns a special 
@@ -181,7 +196,7 @@ so you can copy it to some
 suitable place (where your compiler can find it) and insert
 
 ```C++
-#include <torsor.hpp>
+   #include <torsor.hpp>
 ```
 
 in your source file(s).
@@ -192,7 +207,7 @@ with the *-fconcepts* command-line flag.
 The torsor.hpp file contains Doxygen comments.
 The command
 '''
-make docs
+   make docs
 '''
 in the root directory generates the Doxygen pages
 (Doxygen required),
@@ -215,8 +230,8 @@ because it is not a duration,
 but the difference between two such values *is* a duration.
 
 ```C++
-using duration = ...
-torsor< duration > now();
+   using duration = ...
+   torsor< duration > now();
 ```
 
 Our timing library is likely to have a function that can be
@@ -231,32 +246,32 @@ Making the argument of the second function a torsor
 the two functions can be overloaded.
 
 ```C++
-// wait for the specified amount of time
-void wait( duration ); 
+   // wait for the specified amount of time
+   void wait( duration ); 
 
-// wait until the specified moment in time
-void wait( torsor< duration > );
+   // wait until the specified moment in time
+   void wait( torsor< duration > );
 ```
 
 With these definitions a user can't make the mistake of adding
 two moments.
 
 ```C++
-auto a = now();
-auto b = now();
-a + b: // won't compile
+   auto a = now();
+   auto b = now();
+   a + b: // won't compile
 ```
 This simple benchmark function shows that the difference between two
 moments is a duration.
 
 ```C++
-template< typename F >
-duration time_to_run( F work ){
-   auto start = now();
-   work();
-   auto stop = now();
-   return stop - start;
-};   
+   template< typename F >
+   duration time_to_run( F work ){
+      auto start = now();
+      work();
+      auto stop = now();
+      return stop - start;
+   };   
 ```
 The distinction between absolute time and moments in time can be found
 in the C++ [std::chrono](https://en.cppreference.com/w/cpp/chrono) library,
@@ -286,17 +301,17 @@ of a distance on the screen, the two options can be provided by
 two constructors that take different second arguments.
 
 ```C++
-using distance = ...
-using location = torsor< distance >;
+   using distance = ...
+   using location = torsor< distance >;
 
-class rectangle {
-   . . .
-public:
-   rectangle( location start, location end );
+   class rectangle {
+      . . .
+   public:
+      rectangle( location start, location end );
    
-   rectangle( location start, distance size ): 
-      rectangle( start, start + size ){}
-}; 
+      rectangle( location start, distance size ): 
+         rectangle( start, start + size ){}
+   }; 
 ```
 
 ------------------------------------------------------------------------------

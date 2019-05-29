@@ -25,7 +25,7 @@
 //
 // concepts for protecting the tensor operators
 //
-// I use the phrase 'can be ... from X' to refer to a right operand X.
+// I use the phrase 'can be ... with X' to refer to a right operand X.
 //
 // ==========================================================================
 
@@ -34,61 +34,64 @@
 
 // concept for the torsor copy constructor
 template< typename V, typename W >
-concept bool torsor_can_be_constructed_from = requires ( W w ) {  
+concept bool torsor_can_be_constructed_from
+= requires ( W w ) {  
    V( w );
 };
 
 // concept for the torsor assignment operator
 template< typename V, typename W >
-concept bool torsor_can_be_assigned_from = requires ( V & v, W w ) {  
+concept bool torsor_can_be_assigned_from
+= requires ( V & v, W w ) {  
    v = w;
 };
 
 // conecpt for the ( torsor + value ) operator
 template< typename V, typename W >
-concept bool torsor_can_be_added_by_value = requires ( V v, W w ) {  
+concept bool torsor_can_be_added_with_value
+= requires ( V v, W w ) {  
    ( v + w );
 };
 
-// concept for the ( torsor - value ) operator
+// concept for the ( torsor - value ) operators
 template< typename V, typename W >
-concept bool torsor_can_be_subtracted_by_value = requires ( V v, W w ) {  
-   ( v - w );
-};
-
-// concept for the ( torsor - torsor ) operator
-template< typename V, typename W >
-concept bool torsor_can_be_subtracted_by_torsor = requires ( V v, W w ) {  
+concept bool torsor_can_be_subtracted_with_value 
+= requires ( V v, W w ) {  
    ( v - w );
 };
 
 // concept for the ( torsor += value ) operator
 template< typename V, typename W >
-concept bool torsor_can_be_update_added_by_value = requires ( V v, W w ) {  
+concept bool torsor_can_be_update_added_with_value 
+= requires ( V v, W w ) {  
    ( v += w );
 };
 
 // concept for the ( torsor -= value ) operator
 template< typename V, typename W >
-concept bool torsor_can_be_update_subtracted_by_value = requires ( V v, W w ){
+concept bool torsor_can_be_update_subtracted_with_value 
+= requires ( V v, W w ){
    ( v -= w );
 };
 
 // concept for the ( torsor == torsor ) operator
 template< typename V, typename W >
-concept bool torsors_can_be_compare_equal = requires ( V v, W w ){
+concept bool torsors_can_be_compared_equal 
+= requires ( V v, W w ){
    ( v == w );
 };
 
 // concept for the ( torsor == torsor ) operator
 template< typename V, typename W >
-concept bool torsors_can_be_compare_unequal = requires ( V v, W w ){
+concept bool torsors_can_be_compared_unequal 
+= requires ( V v, W w ){
    ( v != w );
 };
 
 // concept for the ( COUT << torsor ) operator
 template< typename COUT, typename W >
-concept bool torsor_can_be_printed_to = requires( COUT cout, char c, W w ){
+concept bool torsor_can_be_printed_to 
+= requires( COUT cout, char c, W w ){
    ( cout << c );
    ( cout << w );
 };
@@ -119,22 +122,20 @@ concept bool torsor_can_be_printed_to = requires( COUT cout, char c, W w ){
 template< typename T >
 class torsor final {
 private:
-public:
 
    // (only) torsors of (any type) can 
    // - access the value of torsors of any (same or other) type
    // - create non-zero torsors of any (same or other) type
-   template<typename> friend class torsor;
+   template<typename> friend class torsor; 
    
    // the stored base type value
    T value;
 
    // create a (possibly non-zero) torsor value
-   constexpr torsor( const T & value ):
+   constexpr explicit torsor( const T & value ):
       value( value )
    {}
-   
-//   static constexpr bool is_torsor = true;
+
 
 public:
 
@@ -173,14 +174,15 @@ public:
       value = right.value;
       return *this;
    }
+   
 
    // =======================================================================
    //
-   // add and subtract
+   // add
    //
    // =======================================================================
 
-   /// add a torsor and a value
+   /// add a torsor with a value
    ///
    /// Add a value to ourselve.
    /// The base types of our torsor and the value must be addable.
@@ -188,30 +190,35 @@ public:
    /// and with the value of that addition.
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_added_by_value< T, U >
+   requires torsor_can_be_added_with_value< T, U >
    ///@endcond
    constexpr auto operator+( const U & right ) const {
       return ::torsor< decltype( value + right ) >( value + right );      
    }
-   
-//#define NONO1   
-#ifdef NONO1
-   /// add a value and a torsor
+
+   /// update add a torsor with a value
    ///
-   /// Add ourselve to a avalue.
-   /// The base types of our torsor and the value must be addable.
-   /// The result is a torsor of the type 
-   /// and with the value of that addition.
-   template< typename U, typename V >
+   /// Add a value into ourselve.
+   /// The base types of our torsor and the value 
+   /// must be update addable.
+   /// The result is a ourselve, updated appropriately.
+   template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_added_by_value< U, V >
+   requires torsor_can_be_update_added_with_value< T, U >
    ///@endcond
-   friend constexpr auto operator+( const U & left, const torsor< V > & right ){
-      return ::torsor< decltype( left + right.value ) >( left + right.value );
+   torsor & operator+=( const U & right ){
+      value += right;
+      return *this;
    }
-#endif   
-   
-   /// subtract a torsor by a value
+
+
+   // =======================================================================
+   //
+   // subtract
+   //
+   // =======================================================================
+
+   /// subtract a torsor with a value
    ///
    /// Subtract a value from ourselve.
    /// The base types of our torsor and the value must be subtractable.
@@ -219,7 +226,7 @@ public:
    /// and with the value of that subtraction.
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_subtracted_by_value< T, U >
+   requires torsor_can_be_subtracted_with_value< T, U >
    ///@endcond
    constexpr auto operator-( const U & right ) const {
       return ::torsor< decltype( value - right ) >( value - right );     
@@ -233,41 +240,28 @@ public:
    /// The result is of the type and has the value of that subtraction.
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_subtracted_by_torsor< T, U >
+   requires torsor_can_be_subtracted_with_value< T, U >
    ///@endcond
    constexpr auto operator-( const torsor< U > & right ) const {
       return value - right.value;      
    }
-
-   /// add a value to into a torsor
-   ///
-   /// Add a value into ourselve.
-   /// The base types of our torsor and the value 
-   /// must be accumulate-addable.
-   /// The result is a ourselve.
-   template< typename U >
-   ///@cond INTERNAL
-   requires torsor_can_be_update_added_by_value< T, U >
-   ///@endcond
-   torsor & operator+=( const U & right ){
-      value += right;
-      return *this;
-   }
-
-   /// subtract a value to into a torsor
+   
+   /// update subtract a torsoer with a value
    ///
    /// Subtract a value into ourselve.
    /// The base types of our torsor and the value 
-   /// must be accumulate-addable.
+   /// must be update subtractable.
+   /// The result is a ourselve, updated appropriately.   
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_update_subtracted_by_value< T, U >
+   requires torsor_can_be_update_subtracted_with_value< T, U >
    ///@endcond
    torsor & operator-=( const U & right ){
       value -= right;
       return *this;
    }
-
+   
+   
    // =======================================================================
    //
    // compare
@@ -281,7 +275,7 @@ public:
    /// The result is te result of that comparison.
    template< typename U >
    ///@cond INTERNAL
-   requires torsors_can_be_compare_equal< T, U >
+   requires torsors_can_be_compared_equal< T, U >
    ///@endcond
    constexpr auto operator==( const torsor< U > & right ) const {
       return value == right.value;
@@ -294,11 +288,12 @@ public:
    /// The result is te result of that comparison.
    template< typename U >
    ///@cond INTERNAL
-   requires torsors_can_be_compare_unequal< T, U >
+   requires torsors_can_be_compared_unequal< T, U >
    ///@endcond
    constexpr auto operator!=( const torsor< U > & right ) const {
       return value != right.value;
    }
+   
 
    // =======================================================================
    //
@@ -321,24 +316,37 @@ public:
       cout << right.value;
       return cout;
    }
+   
+   
+   // =======================================================================
+   //
+   // reverse arithmetic
+   //
+   // =======================================================================
 
-}; // template class torsor
-
-#define NONO2   
-#ifdef NONO2
+   // stopgap because friend doesn't seem to work properly for operator+
+   ///@cond INTERNAL
+   constexpr explicit torsor( const T & value, int n ):
+      value( value )
+   {}   
+   ///@endcond
+   
    /// add a value and a torsor
    ///
    /// Add ourselve to a value.
    /// The base types of our torsor and the value must be addable.
    /// The result is a torsor of the type 
    /// and with the value of that addition.
-   template< typename U, typename V >
+   template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_added_by_value< U, V >
+   requires torsor_can_be_added_with_value< U, T >
    ///@endcond
-   constexpr auto operator+( const U & left, const torsor< V > & right ){
-      return torsor< decltype( left + right.value ) >( left + right.value );
+   friend constexpr auto operator+( const U & left, const torsor & right ){ 
+      return torsor< decltype( left + right.value ) >( 
+	     left + right.value, 42 ); 
    }
-#endif
+
+
+}; // template class torsor
 
 #endif // ifndef torsor_hpp

@@ -94,11 +94,26 @@ void test_adition(){
 
    a += 9;
    TEST_EQUAL( a, b + 9 );
-//   TEST_EQUAL( a, 2 + b );
+   TEST_NOT_EQUAL( a, b + 3 );
+   
+   TEST_EQUAL( a, 9 + b );
+   TEST_NOT_EQUAL( a, 3 + b );
+}
+
+void test_subtraction(){
+   torsor< int8_t > a;
+   torsor< int16_t > b;
+
+   a -= 9;
+   TEST_EQUAL( a, b - 9 );
+   TEST_NOT_EQUAL( a, b - 3 );
+   
 }
 
 int main(){
    test_constructor();
+   test_adition();
+   test_subtraction();
 
    return test_end();
 }

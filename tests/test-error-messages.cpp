@@ -23,7 +23,16 @@
 #include "torsor.hpp"
 
 int main(){
-   torsor< int > a;
+   int _int;	
+   torsor< int > _torsor;
+   torsor<torsor<int>> _torsor_torsor = _torsor + _torsor;
    
-   a = 2;
+   // can't assign 2 to a torsor
+   //_torsor = 2;
+   
+   // can't assign a torsor from a torsor<torsor<T>>
+   //_torsor = _torsor_torsor;
+   
+   _int = _torsor - _torsor;
+   
 }
