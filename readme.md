@@ -33,7 +33,7 @@ https://creativecommons.org/licenses/by-sa/2.5/)
 
 > gcc > 6.2 (I used GCC/MinGW 7.3.0) with -fconcepts
 
-### Gitprint
+### Gitprint 
 
 [Gitprint-formatted version of this document](
 https://gitprint.com/wovo/torsor/blob/master/readme.md)
