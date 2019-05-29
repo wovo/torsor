@@ -26,14 +26,12 @@ I hope it doesn't pozone you.
 ### Licensing
 
 > copyright (C) Wouter van OOijen - 2019
-
-> source license: [boost](
+<BR>source license: [boost](
 https://www.boost.org/users/license.html)
-
-> documentation license (this file and te other .md files): [CC BY-SA 2.5](
+<BR>
+documentation license (this file and te other .md files): [CC BY-SA 2.5](
 https://creativecommons.org/licenses/by-sa/2.5/)
-
-> Though not required, I appriciate being informed of any use of tis libary,
+<BR>Though not required, I appriciate being informed of any use of tis libary,
 and feedback is of course also welcomed.
 
 ### Requires
@@ -42,7 +40,7 @@ and feedback is of course also welcomed.
 
 ### Gitprint 
 
->> [Gitprint-formatted version of this document](
+> [Gitprint-formatted version of this document](
 https://gitprint.com/wovo/torsor/blob/master/readme.md)
 
 ------------------------------------------------------------------------------
