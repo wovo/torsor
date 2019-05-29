@@ -28,8 +28,7 @@ I hope it doesn't pozone you.
 > copyright (C) Wouter van OOijen - 2019
 <BR>source license: [boost](
 https://www.boost.org/users/license.html)
-<BR>
-documentation license (this file and te other .md files): [CC BY-SA 2.5](
+<BR>documentation license (this file and te other .md files): [CC BY-SA 2.5](
 https://creativecommons.org/licenses/by-sa/2.5/)
 <BR>Though not required, I appriciate being informed of any use of tis libary,
 and feedback is of course also welcomed.
