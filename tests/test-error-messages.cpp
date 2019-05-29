@@ -1,8 +1,14 @@
 // ==========================================================================
 //
-// test-runtime.hpp
+// test-compiler-message.hpp
 //
 // torsor compiler error messages tests
+//
+// This is a man-in-the-loop test:
+// enable a test by removing the comment marks,
+// compile it using the command 'make build'
+// in the root directory, and check that the compiler error
+// is reasonable.
 //
 // https://www.github.com/wovo/torsor
 // 
@@ -16,35 +22,8 @@
 #include <iostream>
 #include "torsor.hpp"
 
-
-void test_constructor(){
+int main(){
    torsor< int > a;
-   torsor< int > b;
-   
-   // created equal
-   TEST_EQUAL( a, b );
-   
-   // equality is not accidental
-   a += 2;
-   TEST_NOT_EQUAL( a, b );
-   b += 2;
-   TEST_EQUAL( a, b );
-}
-
-void test_add(){
-   torsor< int > a;
-   torsor< int > b;
-   
-   a += 2;
-   TEST_EQUAL( a, b + 2 );
-   TEST_EQUAL( a, 2 + b );
    
    a = 2;
-}
-
-int main(){
-   test_constructor();
-   test_add();
-
-   return test_end();
 }

@@ -61,10 +61,10 @@ struct CONCAT( box, LINE ) {                         \
    requires requires( T x ) {                        \
       ( x * EXP );                                   \
    }                                                 \
-   bool f(){ return 1; }                             \
+   bool f(){ return 0; }                             \
                                                      \
    template< typename T >                            \
-   bool f(){ return 0; }                             \
+   bool f(){ return 1; }                             \
                                                      \
 };                                                   \
                                                      \
@@ -72,7 +72,7 @@ auto CONCAT( dummy, LINE ) = add( result{            \
    RES, LINE, #EXP,                                  \
    CONCAT( box, LINE )().f< dummy_multiply >() } );  \
 
-#define ERROR( EXP )   ERROR2( 0, __LINE__, EXP ) 
+#define ERROR( EXP ) ERROR2( 0, __LINE__, EXP ) 
 #define ALLOWED( EXP ) ERROR2( 1, __LINE__, EXP ) 
 
 int main(){
@@ -93,15 +93,15 @@ int main(){
 
    if( tests_failed == 0 ){
       std::cout 
-         << "\nCompilation test success: " 
-         << std::dec << results.size()
-         << " test(s) were successfull\n";
+	     << "\nCompilation test success: " 
+		 << std::dec << results.size()
+		 << " test(s) were successfull\n";
       return 0;
    } else {	   
       std::cout 
-         << "\nCOMPILATION TEST FAILURE: " 
-         << std::dec << tests_failed
-         << " test(s) were NOT successfull\n";
+	     << "\nCOMPILATION TEST FAILURE: " 
+		 << std::dec << tests_failed
+		 << " test(s) were NOT successfull\n";
       return -1;
    }
 
@@ -117,11 +117,9 @@ int main(){
 torsor< int > a;
 int b;
 
-ALLOWED(  a = a      )
-ALLOWED(  a = b      ) // wrong
-ALLOWED(  a = a + b  )
-ALLOWED(  a = b + a  )
-ALLOWED(  a = b + b  ) // wrong
+ALLOWED(  a + a  )
+ERROR(    a + b  )
+ALLOWED(  b + a  )
+ERROR(    b + b  )
 
-ALLOWED(      a + a  )
-ERROR(    a = a + a  )
+

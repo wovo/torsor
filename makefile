@@ -6,13 +6,16 @@ endif
 
 CPPX := $(CPP) -std=c++17 -fconcepts -Ilibrary
 
-.PHONY: tests docs
+.PHONY: tests build docs 
 
 test-compilation.exe: library/torsor.hpp tests/test-compilation.cpp
 	$(CPPX) tests/test-compilation.cpp -o test-compilation.exe 
 
 test-runtime.exe: library/torsor.hpp tests/test-runtime.cpp
 	$(CPPX) tests/test-runtime.cpp -o test-runtime.exe 
+
+build: 
+	$(CPPX) tests/test-error-messages.cpp -o test-compiler-messages.exe 
 
 tests: test-compilation.exe test-runtime.exe
 	./test-compilation.exe && ./test-runtime.exe

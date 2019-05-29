@@ -4,7 +4,7 @@
 
 ### Summary
 
-This is a very small C++ one-header one-class library 
+Torsor is a very small C++ one-header one-class library 
 for expressing and enforcing the difference between relative 
 and absolute (anchored) values, aka torsors.
 Much like a unit system, this library uses the type system 
@@ -21,12 +21,13 @@ I hope it doesn't pozone you.
 
 > Wouter van Ooijen (wouter@voti.nl)
 
-### Licencesing
+### Licensing
 
-> source license [boost](https://www.boost.org/users/license.html)
+> source license [boost](
+https://www.boost.org/users/license.html)
 
 > documentation license (this file and te other .md files): [CC BY-SA 2.5](
-https://creativecommons.org/licenses/by-sa/2.5/)<BR>
+https://creativecommons.org/licenses/by-sa/2.5/)
 
 ### Requires
 

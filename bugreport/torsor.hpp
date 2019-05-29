@@ -119,7 +119,6 @@ concept bool torsor_can_be_printed_to = requires( COUT cout, char c, W w ){
 template< typename T >
 class torsor final {
 private:
-public:
 
    // (only) torsors of (any type) can 
    // - access the value of torsors of any (same or other) type
@@ -133,8 +132,6 @@ public:
    constexpr torsor( const T & value ):
       value( value )
    {}
-   
-//   static constexpr bool is_torsor = true;
 
 public:
 
@@ -176,7 +173,7 @@ public:
 
    // =======================================================================
    //
-   // add and subtract
+   // adda and subtract
    //
    // =======================================================================
 
@@ -193,23 +190,6 @@ public:
    constexpr auto operator+( const U & right ) const {
       return ::torsor< decltype( value + right ) >( value + right );      
    }
-   
-//#define NONO1   
-#ifdef NONO1
-   /// add a value and a torsor
-   ///
-   /// Add ourselve to a avalue.
-   /// The base types of our torsor and the value must be addable.
-   /// The result is a torsor of the type 
-   /// and with the value of that addition.
-   template< typename U, typename V >
-   ///@cond INTERNAL
-   requires torsor_can_be_added_by_value< U, V >
-   ///@endcond
-   friend constexpr auto operator+( const U & left, const torsor< V > & right ){
-      return ::torsor< decltype( left + right.value ) >( left + right.value );
-   }
-#endif   
    
    /// subtract a torsor by a value
    ///
@@ -323,22 +303,5 @@ public:
    }
 
 }; // template class torsor
-
-#define NONO2   
-#ifdef NONO2
-   /// add a value and a torsor
-   ///
-   /// Add ourselve to a value.
-   /// The base types of our torsor and the value must be addable.
-   /// The result is a torsor of the type 
-   /// and with the value of that addition.
-   template< typename U, typename V >
-   ///@cond INTERNAL
-   requires torsor_can_be_added_by_value< U, V >
-   ///@endcond
-   constexpr auto operator+( const U & left, const torsor< V > & right ){
-      return torsor< decltype( left + right.value ) >( left + right.value );
-   }
-#endif
 
 #endif // ifndef torsor_hpp
