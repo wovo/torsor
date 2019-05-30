@@ -405,4 +405,5 @@ is a valid operation, which can not be done directly.
 - ::torsor means that it can't be put in a namespace?
 - put the concepts in a namepsace
 - eliminate the torsor(int,42) hack
+- rewrite mathematical background
 
