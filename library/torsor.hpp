@@ -46,6 +46,13 @@ concept bool torsor_can_be_assigned_from
    v = w;
 };
 
+// conecpt for the ( + torsor ) operator
+template< typename V >
+concept bool torsor_can_be_plussed
+= requires ( V v ) {  
+   ( + v );
+};
+
 // conecpt for the ( torsor + value ) operator
 template< typename V, typename W >
 concept bool torsor_can_be_added_with_value
@@ -81,11 +88,39 @@ concept bool torsors_can_be_compared_equal
    ( v == w );
 };
 
-// concept for the ( torsor == torsor ) operator
+// concept for the ( torsor != torsor ) operator
 template< typename V, typename W >
 concept bool torsors_can_be_compared_unequal 
 = requires ( V v, W w ){
    ( v != w );
+};
+
+// concept for the ( torsor > torsor ) operator
+template< typename V, typename W >
+concept bool torsors_can_be_compared_larger
+= requires ( V v, W w ){
+   ( v > w );
+};
+
+// concept for the ( torsor >= torsor ) operator
+template< typename V, typename W >
+concept bool torsors_can_be_compared_larger_or_equal
+= requires ( V v, W w ){
+   ( v >= w );
+};
+
+// concept for the ( torsor < torsor ) operator
+template< typename V, typename W >
+concept bool torsors_can_be_compared_smaller
+= requires ( V v, W w ){
+   ( v < w );
+};
+
+// concept for the ( torsor >= torsor ) operator
+template< typename V, typename W >
+concept bool torsors_can_be_compared_smaller_or_equal
+= requires ( V v, W w ){
+   ( v <= w );
 };
 
 // concept for the ( COUT << torsor ) operator
@@ -120,7 +155,7 @@ concept bool torsor_can_be_printed_to
 /// The base type of a torsor must have a constructor that
 /// accepts a (single) 0 argument.
 template< typename T >
-class torsor final {
+class torsor final {  
 private:
 
    // (only) torsors of (any type) can 
@@ -170,7 +205,7 @@ public:
    ///@cond INTERNAL
    requires torsor_can_be_assigned_from< T, U >
    ///@endcond
-   torsor & operator=( const torsor< U > & right ) const {
+   torsor & operator=( const torsor< U > & right ){
       value = right.value;
       return *this;
    }
@@ -181,6 +216,17 @@ public:
    // add
    //
    // =======================================================================
+
+   /// positive of a torsor
+   ///
+   /// This unary plus operator just returns the torsor (value) itself.w
+   constexpr auto operator+() const 
+   ///@cond INTERNAL
+   requires torsor_can_be_plussed< T >
+   ///@endcond
+   {
+      return ::torsor< T >( + value ); 
+   }
 
    /// add a torsor with a value
    ///
@@ -264,7 +310,7 @@ public:
    
    // =======================================================================
    //
-   // compare
+   // compare equal
    //
    // =======================================================================
 
@@ -297,27 +343,69 @@ public:
 
    // =======================================================================
    //
-   // print
+   // compare larger
    //
    // =======================================================================
 
-   /// print a torsor to a cout-like object
+   /// compare torsors for larger
    ///
-   /// The torsor value is printed, preceded by a '@'
-   /// character.
-   /// The left argument must support printing (using operator<<)
-   /// of a char and of a base type value.
-   template< typename COUT >
+   /// Compares a torsor for being larger than another torsor.
+   /// The base types of te torsors must support the comparison.
+   /// The result is te result of that comparison.
+   template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_printed_to< COUT, T >
+   requires torsors_can_be_compared_larger< T, U >
    ///@endcond
-   friend COUT & operator<<( COUT & cout, const torsor & right ){
-      cout << '@';
-      cout << right.value;
-      return cout;
+   constexpr auto operator>( const torsor< U > & right ) const {
+      return value > right.value;
    }
-   
-   
+
+   /// compare torsors for larger or equal
+   ///
+   /// Compares a torsor for being larger than or equal to another torsor.
+   /// The base types of te torsors must support the comparison.
+   /// The result is te result of that comparison.
+   template< typename U >
+   ///@cond INTERNAL
+   requires torsors_can_be_compared_larger_or_equal< T, U >
+   ///@endcond
+   constexpr auto operator>=( const torsor< U > & right ) const {
+      return value >= right.value;
+   }
+
+
+   // =======================================================================
+   //
+   // compare smaller
+   //
+   // =======================================================================
+
+   /// compare torsors for smaller
+   ///
+   /// Compares a torsor for being smaller than another torsor.
+   /// The base types of te torsors must support the comparison.
+   /// The result is te result of that comparison.
+   template< typename U >
+   ///@cond INTERNAL
+   requires torsors_can_be_compared_smaller< T, U >
+   ///@endcond
+   constexpr auto operator<( const torsor< U > & right ) const {
+      return value < right.value;
+   }
+
+   /// compare torsors for smaller or equal
+   ///
+   /// Compares a torsor for being smaller than or equal to another torsor.
+   /// The base types of te torsors must support the comparison.
+   /// The result is te result of that comparison.
+   template< typename U >
+   ///@cond INTERNAL
+   requires torsors_can_be_compared_smaller_or_equal< T, U >
+   ///@endcond
+   constexpr auto operator<=( const torsor< U > & right ) const {
+      return value <= right.value;
+   }
+     
    // =======================================================================
    //
    // reverse arithmetic
@@ -343,10 +431,34 @@ public:
    ///@endcond
    friend constexpr auto operator+( const U & left, const torsor & right ){ 
       return torsor< decltype( left + right.value ) >( 
-	     left + right.value, 42 ); 
+        left + right.value, 42 ); 
    }
+   
 
 
 }; // template class torsor
 
+
+// ==========================================================================
+//
+// print
+//
+// ==========================================================================
+
+/// print a torsor to a cout-like object
+///
+/// The torsor value is printed, preceded by a '@'
+/// character.
+/// The left argument must support printing (using operator<<)
+/// of a char and of a base type value.
+template< typename COUT, typename T >
+///@cond INTERNAL
+requires torsor_can_be_printed_to< COUT, T >
+///@endcond
+COUT & operator<<( COUT & cout, const torsor< T > & right ){
+   cout << '@';
+   cout << ( (T)( right - torsor< T >() ) );
+   return cout;
+}
+   
 #endif // ifndef torsor_hpp

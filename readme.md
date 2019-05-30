@@ -1,5 +1,3 @@
-# ** UNFINISHED - WORK IN PROGRESS **
-
 # Torsor
 
 ### Summary
@@ -142,7 +140,9 @@ In simple terms: with a torsor you can
 
 - compare torsors, which means comparing their base values
 
-- subtract two torsors, which yields its base type
+- subtract two torsors, which yields a value of its base type
+
+- print a torsor, which prints '@' followed by the torsors base value
 
 More formally: the library provides a final class 
 template *torsor\<typename B>*. 
@@ -154,7 +154,7 @@ The library supports the following operations:
 
 - for each torsor\< B > t and X x: 
 
-  ( t + x ), ( x + t ), ( t - x ), ( x - t )
+  ( t + x ), ( x + t ), ( t - x ), ( x - t ), ( + t )
   
   These operators are provided if and only if
 they are available for B and X.
@@ -166,7 +166,7 @@ The result is a torsor of the decltype( t op x ) or ( x op t).
 
   These operators are provided if and only if
 they are available for B and X. 
-The result is a reference to the (appropriately modified) t.
+The result is a reference to the (appropriately updated) t.
 
 - for each torsor\< B > b and torsor\< C > c: 
 
@@ -178,11 +178,32 @@ they are available for B and C.
 The result is the result of the same comparison
 on the base value: ( t op c ) or (c op t ).
 
+- for each torsor\< B > b and ostream-like s:
+
+  ( s << b )
+  
+  This operation is provided if and only if
+s provides a << operator for a char, and 
+a - operator and a << operator for b.
+The b value is printed, prefixed by a '@' character.
+
+  This print operator is provided for debug-logging purposes.
+A real application will likely either never print torsors,
+or define more specific print functions.
+Note that the print operator is not a friend, it uses
+( t - decltype( t )() ) to retrieve the base value of the torsor.
+
+The requirements required for providing each operation
+are checked by concepts.
+
 All operators are const and constexpr, where appropriate.
 There are currently no exception annotations 
 (I work with -fno-exceptions).
-The library itself doen't generate any exceptions, but
-the operations it does with the base type could.
+The library itself doesn't generate any exceptions, but
+the operations it does on the base type could.
+
+The library has no dependencies, mot even on any part of the 
+standard library.
 
 ------------------------------------------------------------------------------
 
@@ -317,8 +338,11 @@ two constructors that take different second arguments.
 
 In his [talk at ACCU 2019](
 https://www.youtube.com/watch?v=nN5ya6oNImg)
-Mateusz Pusz' asked what (if anything) is the sum of two temperatures,
-for instance 10 degrees Celcius + 20 degrees Celcius?
+Mateusz Pusz' asked 
+
+> what (if anything) is the sum of two temperatures,
+> for instance 10 degrees Celcius + 20 degrees Celcius?
+
 He proposed these possible answers:
 
  - 30 degrees Celcius
@@ -354,8 +378,7 @@ it produces something that:
 - when you subtract an absolute (torsor) temperature from it, it
    yields an absolute (torsor) temperature.
    
-I doubt that is usefull to anyone 
-(but check the note at the end of this file about averaging).
+This is how the library behaves, buy I doubt that is useful to anyone.
 
 ------------------------------------------------------------------------------
 
@@ -364,27 +387,22 @@ I doubt that is usefull to anyone
 The torsor class limits the operations on a torsor 
 to adding or subtracting a base type value, 
 or subtraction two torsors to yield a base type value.
-As a colleague remarked, this makes it difficult to average 
-a number of torsor values, which is a perfectly sensible operation.
+AAding two torsors is possible, but it yields a torsor/<torsor<>>.
 
-With the current installation, 
-you can't use torsor\< torsor\< T >>, because
-a torsor requires its base type to have a constructor that accepts
-0 as its (only) parameter. 
-This is because built-in types like int and double require
-this 0 tio be initialized, but a user shouldn't have the option
-to initialize a torsor to a specific value. 
-The constructor could accept an int and ignore its value,
-but that would allow a misleading construction like
-
-```C++
-   torsor< int > t( 15 );
-```
+As a colleague remarked, taking the average of a number of torsor values, 
+is a valid operation, which can not be done directly.
 
 ------------------------------------------------------------------------------
 
 # To do list
 
 - find a nice torsor picture that isn't a user-defined pokemon
-- copyright fromatrs wrong in pandoc
+- copyright formats wrong in pandoc
+- force inlining
+- more tests
+- add spaceship (when it becomes available)
+- transparent exception passing 
+- ::torsor means that it can't be put in a namespace?
+- put the concepts in a namepsace
+- eliminate the torsor(int,42) hack
 

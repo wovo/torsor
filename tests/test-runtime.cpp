@@ -13,6 +13,8 @@
 //
 // ==========================================================================
 
+#include <string>
+#include <sstream>
 #include <iostream>
 #include "torsor.hpp"
 
@@ -29,6 +31,7 @@ int tests_failed = 0;
 template< typename A, typename B >
 void test_ok( 
    bool ok,                          // Test OK?
+   const char *name,                 // name of the test
    const char * f, int n,            // file name and line number
    const char * ta, const char *tb,  // arguments, stringified
    const A & a, const B & b          // arguments, as-is
@@ -39,17 +42,31 @@ void test_ok(
       std::cout 
          << f << ":" << std::dec << n 
          << " check failed \n" 
-         << "   HWLIB_TEST_EQUAL( " << ta << " , " << tb << " )\n"
-         << "   left  \"" << ta << "\" = " << a << "\n"
-         << "   right \"" << tb << "\" = " << b << "\n\n";
+         << "   " << name << "( " 
+         << ta;
+      if( tb != 0){         
+         std::cout << " , " << tb;
+      }         
+      std::cout << " )\n"
+         << "   left  \"" << ta << "\" = " << a << "\n";
+      if( tb != 0 ){   
+         std::cout << "   right \"" << tb << "\" = " << b << "\n";
+      }         
+      std::cout << "\n";
    }
 }
 
-#define TEST_EQUAL( a, b ) \
-   test_ok( (a) == (b), __FILE__, __LINE__, #a, #b, a, b );   
+#define CHECK_EQUAL( a, b ) \
+   test_ok( (a) == (b), "CHECK_EQUAL",  __FILE__, __LINE__, #a, #b, a, b );   
 
-#define TEST_NOT_EQUAL( a, b ) \
-   test_ok( (a) != (b), __FILE__, __LINE__, #a, #b, a, b );   
+#define CHECK_NOT_EQUAL( a, b ) \
+   test_ok( (a) != (b), "CHECK_NOT_EQUAL", __FILE__, __LINE__, #a, #b, a, b );   
+
+#define CHECK_TRUE( a ) \
+   test_ok( (a), "CHECK_TRUE", __FILE__, __LINE__, #a, 0, a, 0 );   
+
+#define CHECK_FALSE( a ) \
+   test_ok( !(a), "CHECK_TRUE", __FILE__, __LINE__, #a, 0, a, 0 );   
 
 int test_end(){
    if( tests_failed == 0 ){
@@ -79,13 +96,16 @@ void test_constructor(){
    torsor< int > b;
 
    // constructed equal
-   TEST_EQUAL( a, b );
+   CHECK_EQUAL( a, b );
    a += 2;
 
    // and this is not fake, a real value is maintained
-   TEST_NOT_EQUAL( a, b );
+   CHECK_NOT_EQUAL( a, b );
    b += 2;
-   TEST_EQUAL( a, b );
+   CHECK_EQUAL( a, b );
+   
+   ( b += 2 ) = a;
+   CHECK_EQUAL( a, b );
 }
 
 void test_adition(){
@@ -93,11 +113,16 @@ void test_adition(){
    torsor< uint16_t > b;
 
    a += 9;
-   TEST_EQUAL( a, b + 9 );
-   TEST_NOT_EQUAL( a, b + 3 );
+   CHECK_EQUAL( a, b + 9 );
+   CHECK_NOT_EQUAL( a, b + 3 );
    
-   TEST_EQUAL( a, 9 + b );
-   TEST_NOT_EQUAL( a, 3 + b );
+   CHECK_EQUAL( a, 9 + b );
+   CHECK_NOT_EQUAL( a, 3 + b );
+   
+   a += 80;
+   CHECK_NOT_EQUAL( a, b );
+   b = + a;
+   CHECK_EQUAL( a, b );
 }
 
 void test_subtraction(){
@@ -105,15 +130,77 @@ void test_subtraction(){
    torsor< int16_t > b;
 
    a -= 9;
-   TEST_EQUAL( a, b - 9 );
-   TEST_NOT_EQUAL( a, b - 3 );
+   CHECK_EQUAL( a, b - 9 );
+   CHECK_NOT_EQUAL( a, b - 3 );
    
+   ( b -= 5 ) = a;
+   CHECK_EQUAL( a, b );
+}
+
+void test_subtraction2(){
+   torsor< int8_t > a;
+   torsor< int16_t > b;
+   
+   a += 16;
+   b += 50;
+   
+   CHECK_EQUAL( b - a, 34 );
+   CHECK_EQUAL( a - decltype( a )(), 16 );
+}
+
+void test_larger(){
+   torsor< int16_t > a;
+   torsor< int32_t > b;
+
+   CHECK_TRUE(  ( a + 1 ) >  b          );
+   CHECK_TRUE(          a > ( b - 1 )   );
+   CHECK_FALSE(         a > ( b + 1 )   );
+   CHECK_FALSE(         a > b           );
+   
+   CHECK_TRUE(  ( a + 1 ) >=  a         );
+   CHECK_TRUE(          a >= b          );
+   CHECK_FALSE( ( a - 1 ) >= b          );
+   
+}
+
+void test_smaller(){
+   torsor< int32_t > a;
+   torsor< int16_t > b;
+
+   CHECK_TRUE(          a <  ( b + 1 )  );
+   CHECK_TRUE(  ( a - 1 ) <  b          );
+   CHECK_FALSE( ( a + 1 ) <  b          );
+   CHECK_FALSE(         a <  b          );
+   
+   CHECK_TRUE(          a <= ( a + 1 )  );
+   CHECK_TRUE(          a <= b          );
+   CHECK_TRUE(  ( a - 1 ) <= b          );
+   
+}
+
+void test_print(){
+   torsor< int > a;
+   std::stringstream s;
+
+   a += 10;
+   s << a;
+   CHECK_EQUAL( s.str(), "@10" );
+
+   a -= 30;
+   s.str( "" );
+   s << a;
+   CHECK_EQUAL( s.str(), "@-20" );
+
 }
 
 int main(){
    test_constructor();
    test_adition();
-   test_subtraction();
+   test_subtraction();  
+   test_subtraction2();  
+   test_larger();  
+   test_smaller();  
+   test_print();  
 
    return test_end();
 }
