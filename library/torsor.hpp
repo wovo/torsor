@@ -20,6 +20,10 @@
 // this file contains Doxygen lines
 /// @file
 
+// Doxygen doeesn't understand conecpts or even the
+// __attribute__((always_inline)), so those are put
+// in @cond INTERNAL / @endcond blocks.
+
 
 // ==========================================================================
 //
@@ -27,109 +31,117 @@
 //
 // I use the phrase 'can be ... with X' to refer to a right operand X.
 //
+// The concepts are in their own namespace to limit the global name
+// space pollution.
+//
 // ==========================================================================
 
 // doxygen doesn't handle concepts
 ///@cond INTERNAL
 
+namespace torsor_concepts {
+   
+
 // concept for the torsor copy constructor
 template< typename V, typename W >
-concept bool torsor_can_be_constructed_from
+concept bool can_be_constructed_from
 = requires ( W w ) {  
    V( w );
 };
 
 // concept for the torsor assignment operator
 template< typename V, typename W >
-concept bool torsor_can_be_assigned_from
+concept bool can_be_assigned_from
 = requires ( V & v, W w ) {  
    v = w;
 };
 
 // conecpt for the ( + torsor ) operator
 template< typename V >
-concept bool torsor_can_be_plussed
+concept bool can_be_plussed
 = requires ( V v ) {  
    ( + v );
 };
 
 // conecpt for the ( torsor + value ) operator
 template< typename V, typename W >
-concept bool torsor_can_be_added_with_value
+concept bool can_be_added_with_value
 = requires ( V v, W w ) {  
    ( v + w );
 };
 
 // concept for the ( torsor - value ) operators
 template< typename V, typename W >
-concept bool torsor_can_be_subtracted_with_value 
+concept bool can_be_subtracted_with_value 
 = requires ( V v, W w ) {  
    ( v - w );
 };
 
 // concept for the ( torsor += value ) operator
 template< typename V, typename W >
-concept bool torsor_can_be_update_added_with_value 
+concept bool can_be_update_added_with_value 
 = requires ( V v, W w ) {  
    ( v += w );
 };
 
 // concept for the ( torsor -= value ) operator
 template< typename V, typename W >
-concept bool torsor_can_be_update_subtracted_with_value 
+concept bool can_be_update_subtracted_with_value 
 = requires ( V v, W w ){
    ( v -= w );
 };
 
 // concept for the ( torsor == torsor ) operator
 template< typename V, typename W >
-concept bool torsors_can_be_compared_equal 
+concept bool can_be_compared_equal 
 = requires ( V v, W w ){
    ( v == w );
 };
 
 // concept for the ( torsor != torsor ) operator
 template< typename V, typename W >
-concept bool torsors_can_be_compared_unequal 
+concept bool can_be_compared_unequal 
 = requires ( V v, W w ){
    ( v != w );
 };
 
 // concept for the ( torsor > torsor ) operator
 template< typename V, typename W >
-concept bool torsors_can_be_compared_larger
+concept bool can_be_compared_larger
 = requires ( V v, W w ){
    ( v > w );
 };
 
 // concept for the ( torsor >= torsor ) operator
 template< typename V, typename W >
-concept bool torsors_can_be_compared_larger_or_equal
+concept bool can_be_compared_larger_or_equal
 = requires ( V v, W w ){
    ( v >= w );
 };
 
 // concept for the ( torsor < torsor ) operator
 template< typename V, typename W >
-concept bool torsors_can_be_compared_smaller
+concept bool can_be_compared_smaller
 = requires ( V v, W w ){
    ( v < w );
 };
 
 // concept for the ( torsor >= torsor ) operator
 template< typename V, typename W >
-concept bool torsors_can_be_compared_smaller_or_equal
+concept bool can_be_compared_smaller_or_equal
 = requires ( V v, W w ){
    ( v <= w );
 };
 
 // concept for the ( COUT << torsor ) operator
 template< typename COUT, typename W >
-concept bool torsor_can_be_printed_to 
+concept bool can_be_printed_to 
 = requires( COUT cout, char c, W w ){
    ( cout << c );
    ( cout << w );
 };
+
+}; // namespace torsor_concepts
 
 ///@endcond
 
@@ -141,18 +153,21 @@ concept bool torsor_can_be_printed_to
 // ==========================================================================
 
 /// absolute version of an arithmetic value type
-///
+//
 /// For a value type that denotes a ratio scale value (a value
 /// for which addition yields a value on the same scale), the
 /// torsor of that (base) type is the corresponding interval scale 
 /// (anchored) type.
 ///
 /// The operations on the torsor are limited to: 
+/// - default- or copy-consructing a torsor
+/// - assigning a torsor (ssigns the base value)
 /// - adding or subtracting a base type value (yields a torsor value)
 /// - subtracting two torsors (yields a base type value)
+/// - comparing torsors (compares their base values)
 /// - printing a torsor (prints @ followed by its base type value)
 /// 
-/// The base type of a torsor must have a constructor that
+/// The base type T of a torsor must have a constructor that
 /// accepts a (single) 0 argument.
 template< typename T >
 class torsor final {  
@@ -167,6 +182,9 @@ private:
    T value;
 
    // create a (possibly non-zero) torsor value
+   ///@cond INTERNAL
+   __attribute__((always_inline))
+   ///@endcond
    constexpr explicit torsor( const T & value ):
       value( value )
    {}
@@ -183,6 +201,9 @@ public:
    /// default torsor constructor
    ///
    /// Create a torsor with the zero (anchor) value.
+   ///@cond INTERNAL
+   __attribute__((always_inline))
+   ///@endcond
    constexpr torsor():value( 0 ){}
 
    /// create from another torsor
@@ -191,7 +212,8 @@ public:
    /// from which our own base type can be copy-constructed.
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_constructed_from< T, U >
+   requires torsor_concepts::can_be_constructed_from< T, U >
+   __attribute__((always_inline))
    ///@endcond
    constexpr torsor( const torsor< U > & right ):
       value( right.value )
@@ -203,7 +225,8 @@ public:
    /// that can be assigned to our base type.
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_assigned_from< T, U >
+   requires torsor_concepts::can_be_assigned_from< T, U >
+   __attribute__((always_inline))
    ///@endcond
    torsor & operator=( const torsor< U > & right ){
       value = right.value;
@@ -222,7 +245,8 @@ public:
    /// This unary plus operator just returns the torsor (value) itself.w
    constexpr auto operator+() const 
    ///@cond INTERNAL
-   requires torsor_can_be_plussed< T >
+   requires torsor_concepts::can_be_plussed< T >
+   __attribute__((always_inline))
    ///@endcond
    {
       return ::torsor< T >( + value ); 
@@ -236,7 +260,8 @@ public:
    /// and with the value of that addition.
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_added_with_value< T, U >
+   requires torsor_concepts::can_be_added_with_value< T, U >
+   __attribute__((always_inline))
    ///@endcond
    constexpr auto operator+( const U & right ) const {
       return ::torsor< decltype( value + right ) >( value + right );      
@@ -250,7 +275,8 @@ public:
    /// The result is a ourselve, updated appropriately.
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_update_added_with_value< T, U >
+   requires torsor_concepts::can_be_update_added_with_value< T, U >
+   __attribute__((always_inline))
    ///@endcond
    torsor & operator+=( const U & right ){
       value += right;
@@ -272,7 +298,8 @@ public:
    /// and with the value of that subtraction.
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_subtracted_with_value< T, U >
+   requires torsor_concepts::can_be_subtracted_with_value< T, U >
+   __attribute__((always_inline))
    ///@endcond
    constexpr auto operator-( const U & right ) const {
       return ::torsor< decltype( value - right ) >( value - right );     
@@ -286,7 +313,8 @@ public:
    /// The result is of the type and has the value of that subtraction.
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_subtracted_with_value< T, U >
+   requires torsor_concepts::can_be_subtracted_with_value< T, U >
+   __attribute__((always_inline))
    ///@endcond
    constexpr auto operator-( const torsor< U > & right ) const {
       return value - right.value;      
@@ -300,7 +328,8 @@ public:
    /// The result is a ourselve, updated appropriately.   
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_update_subtracted_with_value< T, U >
+   requires torsor_concepts::can_be_update_subtracted_with_value< T, U >
+   __attribute__((always_inline))
    ///@endcond
    torsor & operator-=( const U & right ){
       value -= right;
@@ -321,7 +350,8 @@ public:
    /// The result is te result of that comparison.
    template< typename U >
    ///@cond INTERNAL
-   requires torsors_can_be_compared_equal< T, U >
+   requires torsor_concepts::can_be_compared_equal< T, U >
+   __attribute__((always_inline))
    ///@endcond
    constexpr auto operator==( const torsor< U > & right ) const {
       return value == right.value;
@@ -334,7 +364,8 @@ public:
    /// The result is te result of that comparison.
    template< typename U >
    ///@cond INTERNAL
-   requires torsors_can_be_compared_unequal< T, U >
+   requires torsor_concepts::can_be_compared_unequal< T, U >
+   __attribute__((always_inline))
    ///@endcond
    constexpr auto operator!=( const torsor< U > & right ) const {
       return value != right.value;
@@ -354,7 +385,8 @@ public:
    /// The result is te result of that comparison.
    template< typename U >
    ///@cond INTERNAL
-   requires torsors_can_be_compared_larger< T, U >
+   requires torsor_concepts::can_be_compared_larger< T, U >
+   __attribute__((always_inline))
    ///@endcond
    constexpr auto operator>( const torsor< U > & right ) const {
       return value > right.value;
@@ -367,7 +399,8 @@ public:
    /// The result is te result of that comparison.
    template< typename U >
    ///@cond INTERNAL
-   requires torsors_can_be_compared_larger_or_equal< T, U >
+   requires torsor_concepts::can_be_compared_larger_or_equal< T, U >
+   __attribute__((always_inline))
    ///@endcond
    constexpr auto operator>=( const torsor< U > & right ) const {
       return value >= right.value;
@@ -387,7 +420,8 @@ public:
    /// The result is te result of that comparison.
    template< typename U >
    ///@cond INTERNAL
-   requires torsors_can_be_compared_smaller< T, U >
+   requires torsor_concepts::can_be_compared_smaller< T, U >
+   __attribute__((always_inline))
    ///@endcond
    constexpr auto operator<( const torsor< U > & right ) const {
       return value < right.value;
@@ -400,7 +434,8 @@ public:
    /// The result is te result of that comparison.
    template< typename U >
    ///@cond INTERNAL
-   requires torsors_can_be_compared_smaller_or_equal< T, U >
+   requires torsor_concepts::can_be_compared_smaller_or_equal< T, U >
+   __attribute__((always_inline))
    ///@endcond
    constexpr auto operator<=( const torsor< U > & right ) const {
       return value <= right.value;
@@ -414,6 +449,7 @@ public:
 
    // stopgap because friend doesn't seem to work properly for operator+
    ///@cond INTERNAL
+   __attribute__((always_inline))
    constexpr explicit torsor( const T & value, int n ):
       value( value )
    {}   
@@ -427,7 +463,8 @@ public:
    /// and with the value of that addition.
    template< typename U >
    ///@cond INTERNAL
-   requires torsor_can_be_added_with_value< U, T >
+   requires torsor_concepts::can_be_added_with_value< U, T >
+   __attribute__((always_inline))
    ///@endcond
    friend constexpr auto operator+( const U & left, const torsor & right ){ 
       return torsor< decltype( left + right.value ) >( 
@@ -453,7 +490,7 @@ public:
 /// of a char and of a base type value.
 template< typename COUT, typename T >
 ///@cond INTERNAL
-requires torsor_can_be_printed_to< COUT, T >
+requires torsor_concepts::can_be_printed_to< COUT, T >
 ///@endcond
 COUT & operator<<( COUT & cout, const torsor< T > & right ){
    cout << '@';

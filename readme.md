@@ -99,34 +99,159 @@ functions with different names.
 
 ------------------------------------------------------------------------------
 
-# Mathematical background
+# Theoretical background
 
-The original notion of ratio, interval, ordinal and nominal scales
-was introduced by Stevens and later made more rigorous. 
-This [Wiki](en.wikipedia.org/wiki/Level_of_measurement)
+## the four classic scales
+
+The notion of four types of scales
+(nominal, ordinal, interval and ratio) with increasing sets of
+operations, was introduced by Stevens and later made more rigorous. 
+This [Wiki](https://en.wikipedia.org/wiki/Level_of_measurement)
 gives a good introduction.
 
-- unit theory
+- The values in a *nominal* scale can be *distinguished* from each other
+(equality and not-equality operators),
+but there are no other useful operations on such values.
+Examples of nominal scales are colors and species.
 
-As I understand it, a torsor is a mathematical abstraction over a group 
-(a set of values with associated operations) that assigns a special 
-meaning to one value.
+- The values in an *ordinal* scale can be distinguished like
+those of a nominal scale, and in addition they can be *ordered*
+(greater, less, greater-or-equal, less-or-equal operators).
+Examples of ordinal scales are scores on a bad-average-good-excellent
+and similar scales.
 
-- The 
-[torsor wiki](https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
-is not very readable for a non-mathematician.
+- The values of an *interval* scale can be distinguished and 
+ordered, like those of an ordinal scale, and in addition the 
+*distances between values can be compared*.
+In the common case the values are equidistant or continuous,
+which means that there is a one-to-one correspondence between
+the scale values and the set of integers or rational numbers.
+A consequence is that interval scale values can meaningfully be 
+averaged.
+Examples of interval scales are locations and moments in time.
 
-- This 
-[Torsors Made Easy](http://math.ucr.edu/home/baez/torsors.html) 
-page is quite readable.
+- The values of a *ratio* scale can be distinguished, ordered and
+averaged, like those of an interval scale, and in addition
+they can be multiplied by a scalar value, or two values can be
+divided to get a scalar value. For two ratio scale values
+it makes sense to say that one is twice as large as the other.
+A ratio scale has a zero value which you can add to any other value
+without changing it.
+Examples of ratio scales are distances, temperature differences,
+and time durations.
 
-- This [blog from The n-Category Cafe](
-https://golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
+In C++, we don't have built-in types with sets of operations 
+that match the four scales. As a best approximation, 
+an enum class can be used for nominal and interval scales, and
+and appropriate numerical type for interval and ratio scales.
+Note that these type support operations that are not meaningful:
+
+- Nominal scale values expressed as enum class values can be ordered.
+
+- Nominal and interval scale values expressed as numerical values 
+can freely be mixed with each other and with scalar (non-scale) values.
+
+- Interval scale values expressed as numerical types can be 
+multiplied and divided.
+ 
+## units of measurement
+
+A unit of measurement is an agreed-upon value in which a 
+quantity (a measured value) can be expressed,
+by stating the ratio between the measured value and the unit.
+When I state that my house is *9 m* high, I mean that 
+the height of my house divided by the standard meter yields the value 9.
+This [Wiki](https://en.wikipedia.org/wiki/Unit_of_measurement)
+gives a good introduction to units of measurement.
+
+Different quantities require different units, but it turns out
+that only a limited set of units is sufficient to express all
+quantities.
+Speed for instance could use its own unit, but when units for 
+distance and time are available, they can be re-used as
+a derived unit to express speed.
+Different minimal sets can be defined, but the 
+[International System of Units](
+https://en.wikipedia.org/wiki/International_System_of_Units)
+(SI) is the generally accepted one.
+
+The set of meaningful operations on quantities is easily expressed:
+
+- Quantities can only be added or subtracted when they have the same unit.
+
+- Multiplication of quantities multiplies their units.
+
+- Division of quantities divides their units.
+
+- The context of an strongly typed imperative language, a variable
+has a unit, and can only hold values expressed in that unit.
+
+In C++, we don't have built-in expressions or types that 
+behave in a unit-correct way, but the language abstraction mechanisms
+can be used to create such a system.
+[Boost::units](
+https://github.com/boostorg/units) is probably the most widely known.
+
+## torsors
+
+The torsor is a mathematical concept. 
+Quoting from the (very readable)
+[Torsors Made Easy](
+http://math.ucr.edu/home/baez/torsors.html) 
+page:
+
+> In a group G you can can add elements and also subtract them. 
+> But you can't add elements of a G-torsor X. 
+> Instead, you can add an element of G 
+> to an element of X and get another element of X. 
+> You can also subtract two elements of X and get an element of G.
+
+In my words: the torsor of a ratio scale is 
+its corresponding interval scale.
+
+The [nlab torsor page ](
+https://ncatlab.org/nlab/show/torsor) 
+gives the slogan
+
+> A torsor is like a group that has forgotten its neutral element.
+
+My interpretation: when you measure in a ratio scale 
+(for example time duration) but you choose too
+anchor your scale at some (arbitrary) moment in time
+by defining that moment as 0, you have lost the special meaning of
+zero: you can no longer add that 0 value to another value
+and get that same value as a result. In fact,
+you can no longer add such 'anchored' values at all.
+
+Another interpretation is that by anchoring 
+(defining a zero) you have added some unknown amount
+to all values,
+which makes addition meaningless because the sum
+would contain that unknown amount twice.
+
+So as a real world example: 
+the group of time differences (a ratio scale)
+which can be added or subtracted, 
+and multiplied or divided by a scalar, 
+has an associated
+torsor which is the group of moments in time (an interval scale).
+Such moments can not be meaningfully added, or
+multiplied or divided by a scalar.
+But two time moments can be subtracted, which yields
+a time duration,
+and you can add a time moment and a time duration, 
+which yields a time duration.
+
+The 
+[torsor wiki](
+https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
+is probably a good source for a mathematician,
+but I found it inaccessible.
+
+This [blog from The n-Category Cafe](
+golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
 tries to be accessible, but I guess I am not part of the intended audience.
 
-- [This page](https://ncatlab.org/nlab/show/torsor) gives the slogan
-"A torsor is like a group that has forgotten its neutral element."
-Otherwise I found it hard to read.
 
 ------------------------------------------------------------------------------
 
@@ -196,7 +321,8 @@ Note that the print operator is not a friend, it uses
 The requirements required for providing each operation
 are checked by concepts.
 
-All operators are const and constexpr, where appropriate.
+All operators are inlined, and are 
+const and constexpr, where appropriate.
 There are currently no exception annotations 
 (I work with -fno-exceptions).
 The library itself doesn't generate any exceptions, but
@@ -385,25 +511,24 @@ This is how the library behaves, buy I doubt that is useful to anyone.
 # Limitations
 
 The torsor class limits the operations on a torsor 
-to adding or subtracting a base type value, 
+to basically adding or subtracting a base type value, 
 or subtraction two torsors to yield a base type value.
 AAding two torsors is possible, but it yields a torsor/<torsor<>>.
 
-As a colleague remarked, taking the average of a number of torsor values, 
-is a valid operation, which can not be done directly.
+As a colleague remarked, taking the average of a number of torsor values
+is a valid operation, which can not be done directly with this torsor
+class.
 
 ------------------------------------------------------------------------------
 
 # To do list
 
-- find a nice torsor picture that isn't a user-defined pokemon
+- find a nice torsor picture that isn't a user-defined pokemon (anchor??)
 - copyright formats wrong in pandoc
-- force inlining
 - more tests
 - add spaceship (when it becomes available)
 - transparent exception passing 
 - ::torsor means that it can't be put in a namespace?
-- put the concepts in a namepsace
 - eliminate the torsor(int,42) hack
 - rewrite mathematical background
 
