@@ -103,7 +103,7 @@ functions with different names.
 
 ## the four classic scales
 
-The notion of four types of scales
+The notion of four types of *scales*
 (nominal, ordinal, interval and ratio) with increasing sets of
 operations, was introduced by Stevens and later made more rigorous. 
 This [Wiki](https://en.wikipedia.org/wiki/Level_of_measurement)
@@ -112,13 +112,13 @@ gives a good introduction.
 - The values in a *nominal* scale can be *distinguished* from each other
 (equality and not-equality operators),
 but there are no other useful operations on such values.
-Examples of nominal scales are colors and species.
+Examples of nominal scales are colors and biological species.
 
 - The values in an *ordinal* scale can be distinguished like
 those of a nominal scale, and in addition they can be *ordered*
 (greater, less, greater-or-equal, less-or-equal operators).
 Examples of ordinal scales are scores on a bad-average-good-excellent
-and similar scales.
+or similar scale.
 
 - The values of an *interval* scale can be distinguished and 
 ordered, like those of an ordinal scale, and in addition the 
@@ -132,7 +132,7 @@ Examples of interval scales are locations and moments in time.
 
 - The values of a *ratio* scale can be distinguished, ordered and
 averaged, like those of an interval scale, and in addition
-they can be multiplied by a scalar value, or two values can be
+they can be *multiplied by a scalar value*, or two values can be
 divided to get a scalar value. For two ratio scale values
 it makes sense to say that one is twice as large as the other.
 A ratio scale has a zero value which you can add to any other value
@@ -144,21 +144,25 @@ In C++, we don't have built-in types with sets of operations
 that match the four scales. As a best approximation, 
 an enum class can be used for nominal and interval scales, and
 and appropriate numerical type for interval and ratio scales.
-Note that these type support operations that are not meaningful:
+Note that these C++ types support operations that are not meaningful
+for some scales:
 
-- Nominal scale values expressed as enum class values can be ordered.
-
-- Nominal and interval scale values expressed as numerical values 
-can freely be mixed with each other and with scalar (non-scale) values.
+- Nominal scale values expressed as enum class values can be ordered,
+which is meaningless.
 
 - Interval scale values expressed as numerical types can be 
-multiplied and divided.
+multiplied and divided by a scalar value, which is meaningless.
  
+- Nominal and interval scale values expressed as numerical values 
+can freely be mixed with each other and with scalar (non-scale) values,
+which is meaningless.
+
 ## units of measurement
 
-A unit of measurement is an agreed-upon value in which a 
+A *unit of measurement* is an agreed-upon value in which a 
 quantity (a measured value) can be expressed,
-by stating the ratio between the measured value and the unit.
+by stating the ratio between the measured value 
+and the unit of measurement.
 When I state that my house is *9 m* high, I mean that 
 the height of my house divided by the standard meter yields the value 9.
 This [Wiki](https://en.wikipedia.org/wiki/Unit_of_measurement)
@@ -169,7 +173,7 @@ that only a limited set of units is sufficient to express all
 quantities.
 Speed for instance could use its own unit, but when units for 
 distance and time are available, they can be re-used as
-a derived unit to express speed.
+a derived unit to express speed as distance divided by time.
 Different minimal sets can be defined, but the 
 [International System of Units](
 https://en.wikipedia.org/wiki/International_System_of_Units)
@@ -189,12 +193,26 @@ has a unit, and can only hold values expressed in that unit.
 In C++, we don't have built-in expressions or types that 
 behave in a unit-correct way, but the language abstraction mechanisms
 can be used to create such a system.
+In such a unit library, each value has an associated 
+set of the powers (exponents) for base unit of the system.
+These powers are present only at compile type, 
+when they are used to generate compiler errors for operations that
+are meaningless.
+
 [Boost::units](
-https://github.com/boostorg/units) is probably the most widely known.
+https://github.com/boostorg/units) is probably the most widely known
+library of this type.
+It is a big library, aparently without a gentle introduction.
+It is rumoured that the set of people who fully understand
+unit tehory is small, as is the set of people who understand
+C++11 enough to write (and some people say *use*) such a library.
+The intersection of those two sets contains exactly two people,
+who happen to be the authors of boots::units.
+
 
 ## torsors
 
-The torsor is a mathematical concept. 
+A torsor is a mathematical concept. 
 Quoting from the (very readable)
 [Torsors Made Easy](
 http://math.ucr.edu/home/baez/torsors.html) 
@@ -229,10 +247,10 @@ to all values,
 which makes addition meaningless because the sum
 would contain that unknown amount twice.
 
-So as a real world example: 
-the group of time differences (a ratio scale)
+A real world example: 
+the group of time differences (a ratio scale,
 which can be added or subtracted, 
-and multiplied or divided by a scalar, 
+and multiplied or divided by a scalar), 
 has an associated
 torsor which is the group of moments in time (an interval scale).
 Such moments can not be meaningfully added, or
@@ -243,12 +261,12 @@ and you can add a time moment and a time duration,
 which yields a time duration.
 
 The 
-[torsor wiki](
+[*torsor wiki*](
 https://en.wikipedia.org/wiki/Torsor_(algebraic_geometry))
 is probably a good source for a mathematician,
 but I found it inaccessible.
 
-This [blog from The n-Category Cafe](
+This [blog from *The n-Category Cafe*](
 golem.ph.utexas.edu/category/2013/06/torsors_and_enriched_categorie.html) 
 tries to be accessible, but I guess I am not part of the intended audience.
 
@@ -530,5 +548,4 @@ class.
 - transparent exception passing 
 - ::torsor means that it can't be put in a namespace?
 - eliminate the torsor(int,42) hack
-- rewrite mathematical background
 
