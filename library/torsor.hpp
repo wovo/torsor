@@ -169,6 +169,11 @@ concept bool can_be_printed_to
 /// 
 /// The base type T of a torsor must have a constructor that
 /// accepts a (single) 0 argument.
+///
+/// All operations have the __attribute__((always_inline)),
+/// hence there is no need to bother with choosing for copy 
+/// or reference parameter passing: all passing disappears.
+///
 template< typename T >
 class torsor final {  
 private:
@@ -470,7 +475,6 @@ public:
       return torsor< decltype( left + right.value ) >( 
         left + right.value, 42 ); 
    }
-   
 
 
 }; // template class torsor

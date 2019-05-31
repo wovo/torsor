@@ -548,4 +548,8 @@ class.
 - transparent exception passing 
 - ::torsor means that it can't be put in a namespace?
 - eliminate the torsor(int,42) hack
+- move constructor??
+- write a matching unit library (when template value parameters works)
+- write a matching newtype library, like 
+github.com/anthonywilliams/strong_typedef/blob/master/strong_typedef.hpp
 
