@@ -541,7 +541,7 @@ class.
 
 # To do list
 
-- find a nice torsor picture that isn't a user-defined pokemon (anchor??)
+- find a nice torsor picture that isn't a user-defined pokemon (an anchor??)
 - copyright formats wrong in pandoc
 - more tests
 - add spaceship (when it becomes available)
@@ -552,4 +552,5 @@ class.
 - write a matching unit library (when template value parameters works)
 - write a matching newtype library, like 
 github.com/anthonywilliams/strong_typedef/blob/master/strong_typedef.hpp
+- try an is-this-valid test with dedicated concepts
 

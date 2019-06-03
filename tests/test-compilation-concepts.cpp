@@ -32,47 +32,28 @@
 //
 // ==========================================================================
 
-const char * error_string = nullptr;
-
-struct TakesAnything
-{
-    // constructed from anything:
-    template<typename T> TakesAnything(T){}
-    
-    void operator=( TakesAnything ) const { 
-       error_string = "assignment =";
-       //return *this;
-    }       
-
+// hide te type if the right hand side of * 
+// to prevent a premature compiler errorn 
+// (is this a compiler bug?)
+struct dummy_multiply {
+	
+   template< typename T >
+   const T & operator * ( const T & x ){
+      return x;
+   }      
+   
+   template< typename T >
+   T & operator * ( T & x ){
+      return & x;
+   }      
 };
 
-template< typename A, typename B >
-void operator+( const A &, const B & ){
-   error_string = "diadic +";
-}
-
-template< typename A, typename B >
-void operator-( const A &, const B & ){
-   error_string = "diadic -";
-}
-
-/*
-template< typename A, typename B >
-void operator+=( A &, const B & ){
-   error_string = "add-assignment +=";
-}
-*/
-
-void operator+=( TakesAnything, TakesAnything ){ 
-       error_string = "add-assignment +=";
-} 
-
+// the results of the tests
 struct result {
    bool         expected;
    int          line;
    std::string  text;
    bool         result;
-   const char * used;
 };
 std::vector< result > results;
 int add( result r ){
@@ -80,21 +61,36 @@ int add( result r ){
    return 42;
 }
 
-#define ERROR2( RES, LINE, EXP ){                    \
-   (EXP); \
-   add( result { RES, LINE, #EXP, \
-   error_string == nullptr, error_string } ); \
-   error_string = nullptr; \
-}
+#define CONCAT( A, B ) A ## B
+
+// Check if EXP is legal by using it in the requires clause
+// of the first f() template ( the one that returns 1):
+// if EXP turns out to be illegal the fallback is selected,
+// which returns 0.
+
+#define ERROR2( RES, LINE, EXP )                     \
+                                                     \
+struct CONCAT( box, LINE ) {                         \
+                                                     \
+   template< typename T >                            \
+   requires requires( T x ) {                        \
+      ( x * EXP );                                   \
+   }                                                 \
+   bool f(){ return 1; }                             \
+                                                     \
+   template< typename T >                            \
+   bool f(){ return 0; }                             \
+                                                     \
+};                                                   \
+                                                     \
+auto CONCAT( dummy, LINE ) = add( result{            \
+   RES, LINE, #EXP,                                  \
+   CONCAT( box, LINE )().f< dummy_multiply >() } );  \
 
 #define ERROR( EXP )   ERROR2( 0, __LINE__, EXP ) 
 #define ALLOWED( EXP ) ERROR2( 1, __LINE__, EXP ) 
 
-void run_tests();
-
 int main(){
-   
-   run_tests();
 
    int tests_failed = 0;
 
@@ -133,35 +129,32 @@ int main(){
 //
 // ==========================================================================
 
-void run_tests(){
-
 torsor< int > _torsor;
 int _int;
 
-//ALLOWED(  _torsor  = _torsor              )
-//ERROR(    _torsor  = _int                 ) 
+ALLOWED(  _torsor  = _torsor              )
+ERROR(    _torsor  = _int                 ) 
 ALLOWED(             _torsor  + _int      )
-//ALLOWED(  _torsor  = _torsor  + _int      )
-//ALLOWED(  _torsor  = _int     + _torsor   )
-//ERROR(    _torsor  = _int     + _int      ) 
+ALLOWED(  _torsor  = _torsor  + _int      )
+ALLOWED(  _torsor  = _int     + _torsor   )
+ERROR(    _torsor  = _int     + _int      ) 
 
 ALLOWED(             _torsor + _torsor    )
-//ERROR(    _torsor  = _torsor + _torsor    )
+ERROR(    _torsor  = _torsor + _torsor    )
 
 ALLOWED(  _torsor += _int                 )
 ERROR(    _torsor += _torsor              )
 ERROR(    _torsor += _torsor + _torsor    )
 
 ALLOWED(             _torsor  - _int      )
-//ALLOWED(  _torsor  = _torsor  - _int      )
-ALLOWED(               _int     - _torsor   ) 
+ALLOWED(  _torsor  = _torsor  - _int      )
+ERROR(               _int     - _torsor   ) 
 
 ALLOWED(             _torsor - _torsor    )
-//ERROR(    _torsor  = _torsor - _torsor    )
-//ALLOWED(  _int     = _torsor - _torsor    )
+ERROR(    _torsor  = _torsor - _torsor    )
+ALLOWED(  _int     = _torsor - _torsor    )
 
-//ALLOWED(  _torsor -= _int                 )
-//ERROR(    _torsor -= _torsor              )
-//ERROR(    _torsor -= _torsor + _torsor    )
+ALLOWED(  _torsor -= _int                 )
+ERROR(    _torsor -= _torsor              )
+ERROR(    _torsor -= _torsor + _torsor    )
 
-}
