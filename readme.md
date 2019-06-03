@@ -91,7 +91,7 @@ The torsor class template uses the type system to block
 such meaningless operations at compile time. 
 It is designed to have zero runtime overhead.
 
-Having different types for a ration scale and its torsor
+Having different types for a ratio scale and its torsor
 can make an API more elegant, because it makes the difference
 between relative and absolute values
 explicit in the type system, instead of requiring two 
@@ -141,7 +141,7 @@ Examples of ratio scales are distances, temperature differences,
 and time durations.
 
 In C++, we don't have built-in types with sets of operations 
-that match the four scales. As a best approximation, 
+that exactly match the four scales. As a best approximation, 
 an enum class can be used for nominal and interval scales, and
 and appropriate numerical type for interval and ratio scales.
 Note that these C++ types support operations that are not meaningful
@@ -172,7 +172,7 @@ Different quantities require different units, but it turns out
 that only a limited set of units is sufficient to express all
 quantities.
 Speed for instance could use its own unit, but when units for 
-distance and time are available, they can be re-used as
+distance and time are available, they can be combined into 
 a derived unit to express speed as distance divided by time.
 Different minimal sets can be defined, but the 
 [International System of Units](
@@ -187,7 +187,7 @@ The set of meaningful operations on quantities is easily expressed:
 
 - Division of quantities divides their units.
 
-- The context of an strongly typed imperative language, a variable
+- In the context of an strongly typed imperative language, a variable
 has a unit, and can only hold values expressed in that unit.
 
 In C++, we don't have built-in expressions or types that 
@@ -203,11 +203,13 @@ are meaningless.
 https://github.com/boostorg/units) is probably the most widely known
 library of this type.
 It is a big library, aparently without a gentle introduction.
-It is rumoured that the set of people who fully understand
-unit tehory is small, as is the set of people who understand
-C++11 enough to write (and some people say *use*) such a library.
-The intersection of those two sets contains exactly two people,
-who happen to be the authors of boots::units.
+Joke:
+
+> The set of people who fully understand
+> unit tehory is small, as is the set of people who understand
+> C++11 enough to write (and some people say *use*) such a library.
+> The intersection of those two sets contains exactly two people,
+> who happen to be the two authors of boots::units.
 
 
 ## torsors
@@ -342,7 +344,8 @@ are checked by concepts.
 All operators are inlined, and are 
 const and constexpr, where appropriate.
 There are currently no exception annotations 
-(I work with -fno-exceptions).
+(My main interest is small micro-controllers without a heap,
+so I always build with -fno-exceptions).
 The library itself doesn't generate any exceptions, but
 the operations it does on the base type could.
 
@@ -358,7 +361,7 @@ so you can copy it to some
 suitable place (where your compiler can find it) and insert
 
 ```C++
-   #include <torsor.hpp>
+   #include "torsor.hpp"
 ```
 
 in your source file(s).
@@ -368,9 +371,11 @@ with the *-fconcepts* command-line flag.
 
 The torsor.hpp file contains Doxygen comments.
 The command
-'''
+
+```
    make docs
-'''
+```
+
 in the root directory generates the Doxygen pages
 (Doxygen required),
 and a pdf version of this file
@@ -531,7 +536,10 @@ This is how the library behaves, buy I doubt that is useful to anyone.
 The torsor class limits the operations on a torsor 
 to basically adding or subtracting a base type value, 
 or subtraction two torsors to yield a base type value.
-AAding two torsors is possible, but it yields a torsor/<torsor<>>.
+Adding two torsors is possible, but it yields a torsor/<torsor<>>.
+I am not sure that is useful, but it behaves logical:
+subtracting two torsor/<torsor<>>'s yields a torsor\<>.
+And removing this feature would have been extra work.
 
 As a colleague remarked, taking the average of a number of torsor values
 is a valid operation, which can not be done directly with this torsor
@@ -544,13 +552,10 @@ class.
 - find a nice torsor picture that isn't a user-defined pokemon (an anchor??)
 - copyright formats wrong in pandoc
 - more tests
-- add spaceship (when it becomes available)
+- add operator<=> (when it becomes available)
 - transparent exception passing 
 - ::torsor means that it can't be put in a namespace?
 - eliminate the torsor(int,42) hack
 - move constructor??
-- write a matching unit library (when template value parameters works)
-- write a matching newtype library, like 
-github.com/anthonywilliams/strong_typedef/blob/master/strong_typedef.hpp
-- try an is-this-valid test with dedicated concepts
+- write a matching unit library (needs template value parameters?)
 
