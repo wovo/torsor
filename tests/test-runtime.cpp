@@ -108,7 +108,7 @@ void test_constructor(){
    CHECK_EQUAL( a, b );
 }
 
-void test_adition(){
+void test_addition(){
    torsor< uint8_t > a;
    torsor< uint16_t > b;
 
@@ -195,7 +195,7 @@ void test_print(){
 
 int main(){
    test_constructor();
-   test_adition();
+   test_addition();
    test_subtraction();  
    test_subtraction2();  
    test_larger();  

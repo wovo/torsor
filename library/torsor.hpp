@@ -174,14 +174,14 @@ concept bool can_be_printed_to
 /// hence there is no need to bother with choosing for copy 
 /// or reference parameter passing: all passing disappears.
 ///
-template< typename T >
+template< typename T, typename M = void >
 class torsor final {  
 private:
 
    // (only) torsors of (any type) can 
    // - access the value of torsors of any (same or other) type
    // - create non-zero torsors of any (same or other) type
-   template<typename> friend class torsor; 
+   template<typename, typename> friend class torsor; 
    
    // the stored base type value
    T value;
@@ -220,7 +220,7 @@ public:
    requires torsor_concepts::can_be_constructed_from< T, U >
    __attribute__((always_inline))
    ///@endcond
-   constexpr torsor( const torsor< U > & right ):
+   constexpr torsor( const torsor< U, M > & right ):
       value( right.value )
    {}
 
@@ -233,7 +233,7 @@ public:
    requires torsor_concepts::can_be_assigned_from< T, U >
    __attribute__((always_inline))
    ///@endcond
-   torsor & operator=( const torsor< U > & right ){
+   torsor & operator=( const torsor< U, M > & right ){
       value = right.value;
       return *this;
    }
@@ -254,7 +254,7 @@ public:
    __attribute__((always_inline))
    ///@endcond
    {
-      return ::torsor< T >( + value ); 
+      return ::torsor< T, M >( + value ); 
    }
 
    /// add a torsor with a value
@@ -269,7 +269,7 @@ public:
    __attribute__((always_inline))
    ///@endcond
    constexpr auto operator+( const U & right ) const {
-      return ::torsor< decltype( value + right ) >( value + right );      
+      return ::torsor< decltype( value + right ), M >( value + right );      
    }
 
    /// update add a torsor with a value
@@ -307,7 +307,7 @@ public:
    __attribute__((always_inline))
    ///@endcond
    constexpr auto operator-( const U & right ) const {
-      return ::torsor< decltype( value - right ) >( value - right );     
+      return ::torsor< decltype( value - right ), M >( value - right );     
    }
    
    /// subtract two torsors
@@ -321,11 +321,11 @@ public:
    requires torsor_concepts::can_be_subtracted_with_value< T, U >
    __attribute__((always_inline))
    ///@endcond
-   constexpr auto operator-( const torsor< U > & right ) const {
+   constexpr auto operator-( const torsor< U, M > & right ) const {
       return value - right.value;      
    }
    
-   /// update subtract a torsoer with a value
+   /// update subtract a torsor with a value
    ///
    /// Subtract a value into ourselve.
    /// The base types of our torsor and the value 
@@ -358,7 +358,7 @@ public:
    requires torsor_concepts::can_be_compared_equal< T, U >
    __attribute__((always_inline))
    ///@endcond
-   constexpr auto operator==( const torsor< U > & right ) const {
+   constexpr auto operator==( const torsor< U, M > & right ) const {
       return value == right.value;
    }
 
@@ -372,7 +372,7 @@ public:
    requires torsor_concepts::can_be_compared_unequal< T, U >
    __attribute__((always_inline))
    ///@endcond
-   constexpr auto operator!=( const torsor< U > & right ) const {
+   constexpr auto operator!=( const torsor< U, M > & right ) const {
       return value != right.value;
    }
    
@@ -393,7 +393,7 @@ public:
    requires torsor_concepts::can_be_compared_larger< T, U >
    __attribute__((always_inline))
    ///@endcond
-   constexpr auto operator>( const torsor< U > & right ) const {
+   constexpr auto operator>( const torsor< U, M > & right ) const {
       return value > right.value;
    }
 
@@ -407,7 +407,7 @@ public:
    requires torsor_concepts::can_be_compared_larger_or_equal< T, U >
    __attribute__((always_inline))
    ///@endcond
-   constexpr auto operator>=( const torsor< U > & right ) const {
+   constexpr auto operator>=( const torsor< U, M > & right ) const {
       return value >= right.value;
    }
 
@@ -428,7 +428,7 @@ public:
    requires torsor_concepts::can_be_compared_smaller< T, U >
    __attribute__((always_inline))
    ///@endcond
-   constexpr auto operator<( const torsor< U > & right ) const {
+   constexpr auto operator<( const torsor< U, M > & right ) const {
       return value < right.value;
    }
 
@@ -442,7 +442,7 @@ public:
    requires torsor_concepts::can_be_compared_smaller_or_equal< T, U >
    __attribute__((always_inline))
    ///@endcond
-   constexpr auto operator<=( const torsor< U > & right ) const {
+   constexpr auto operator<=( const torsor< U, M > & right ) const {
       return value <= right.value;
    }
      
@@ -462,7 +462,7 @@ public:
    
    /// add a value and a torsor
    ///
-   /// Add ourselve to a value.
+   /// Add ourself to a value.
    /// The base types of our torsor and the value must be addable.
    /// The result is a torsor of the type 
    /// and with the value of that addition.
@@ -472,7 +472,7 @@ public:
    __attribute__((always_inline))
    ///@endcond
    friend constexpr auto operator+( const U & left, const torsor & right ){ 
-      return torsor< decltype( left + right.value ) >( 
+      return torsor< decltype( left + right.value ), M >( 
         left + right.value, 42 ); 
    }
 
@@ -492,13 +492,13 @@ public:
 /// character.
 /// The left argument must support printing (using operator<<)
 /// of a char and of a base type value.
-template< typename COUT, typename T >
+template< typename COUT, typename T, typename M >
 ///@cond INTERNAL
 requires torsor_concepts::can_be_printed_to< COUT, T >
 ///@endcond
-COUT & operator<<( COUT & cout, const torsor< T > & right ){
+COUT & operator<<( COUT & cout, const torsor< T, M > & right ){
    cout << '@';
-   cout << ( (T)( right - torsor< T >() ) );
+   cout << ( (T)( right - torsor< T, M >() ) );
    return cout;
 }
    

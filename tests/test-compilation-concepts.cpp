@@ -158,3 +158,28 @@ ALLOWED(  _torsor -= _int                 )
 ERROR(    _torsor -= _torsor              )
 ERROR(    _torsor -= _torsor + _torsor    )
 
+enum class tag1 {};
+enum class tag2 {};
+
+torsor< int, tag1  > _t1;
+torsor< int, tag2  > _t2;
+
+ALLOWED(  _t1      = _t1                  )
+ERROR(    _t1      = _t2                  )
+
+ALLOWED(  _t1      - _t1                  )
+ERROR(    _t1      - _t2                  )
+
+ALLOWED(  _t1      > _t1                  )
+ERROR(    _t1      > _t2                  )
+
+ALLOWED(  _t1     >= _t1                  )
+ERROR(    _t1     >= _t2                  )
+
+ALLOWED(  _t1      < _t1                  )
+ERROR(    _t1      < _t2                  )
+
+ALLOWED(  _t1     <= _t1                  )
+ERROR(    _t1     <= _t2                  )
+
+

@@ -154,7 +154,7 @@ ERROR(    _torsor += _torsor + _torsor    )
 
 ALLOWED(             _torsor  - _int      )
 //ALLOWED(  _torsor  = _torsor  - _int      )
-ALLOWED(               _int     - _torsor   ) 
+ERROR(               _int     - _torsor   )
 
 ALLOWED(             _torsor - _torsor    )
 //ERROR(    _torsor  = _torsor - _torsor    )

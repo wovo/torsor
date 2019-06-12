@@ -11,6 +11,9 @@ CPPX := $(CPP) -std=c++17 -fconcepts -Ilibrary
 test-compilation.exe: library/torsor.hpp tests/test-compilation.cpp
 	$(CPPX) tests/test-compilation.cpp -o test-compilation.exe 
 
+test-compilation-concepts.exe: library/torsor.hpp tests/test-compilation-concepts.cpp
+	$(CPPX) tests/test-compilation-concepts.cpp -o test-compilation-concepts.exe 
+
 test-runtime.exe: library/torsor.hpp tests/test-runtime.cpp
 	$(CPPX) tests/test-runtime.cpp -o test-runtime.exe 
 
@@ -19,13 +22,12 @@ build:
 
 run: test-runtime.exe
 	./test-runtime.exe
-	
-fail: test-compilation.exe 
+
+fail: test-compilation.exe test-compilation-concepts.exe
 	./test-compilation.exe 
-	
-tests: test-compilation.exe test-runtime.exe
-	./test-compilation.exe
-	./test-runtime.exe
+	./test-compilation-concepts.exe 
+   
+tests: run fail
 
 docs: 
 	Doxygen documentation/Doxyfile
