@@ -65,14 +65,14 @@ Subtracting two moments on the other hand does make sense,
 but the result is a duration, rather than a moment in time.
 
 In terms of scales, for a value type that denotes a ratio scale value 
-(a value for which addition yields a value on the same scale), the
-torsor of that type is the corresponding interval scale 
+(a value for which addition yields a value on the same scale), 
+a torsor of that type is a corresponding interval scale 
 (anchored) type.
 
-In mathematical terms, the set of moments in time is the
+In mathematical terms, the set of moments in time is a
 *torsor* of the set of time durations.
 
-Examples of ratio scales and their corresponding torsors 
+Examples of ratio scales and corresponding torsors 
 (anchored interval scales) are:
 
 | ratio scale **T**         | interval scale **torsor< T >**   |
@@ -226,8 +226,8 @@ page:
 > to an element of X and get another element of X. 
 > You can also subtract two elements of X and get an element of G.
 
-In my words: the torsor of a ratio scale is 
-its corresponding interval scale.
+In my words: a torsor of a ratio scale is 
+a corresponding interval scale.
 
 The [nlab torsor page ](
 https://ncatlab.org/nlab/show/torsor) 
@@ -238,13 +238,14 @@ gives the slogan
 My interpretation: when you measure in a ratio scale 
 (for example time duration) but you choose too
 anchor your scale at some (arbitrary) moment in time
-by defining that moment as 0, you have lost the special meaning of
+by defining that value (moment) as 0, 
+you have lost the special meaning of
 zero: you can no longer add that 0 value to another value
 and get that same value as a result. In fact,
 you can no longer add such 'anchored' values at all.
 
 Another interpretation is that by anchoring 
-(defining a zero) you have added some unknown amount
+(arbirarily defining a zero) you have added some unknown amount
 to all values,
 which makes addition meaningless because the sum
 would contain that unknown amount twice.
@@ -277,7 +278,7 @@ tries to be accessible, but I guess I am not part of the intended audience.
 
 # Interface summary
 
-In simple terms: with a torsor you can 
+In simple terms: with a same-tag torsor you can 
 
 - construct, copy, assign
 
@@ -289,11 +290,14 @@ In simple terms: with a torsor you can
 
 - print a torsor, which prints '@' followed by the torsors base value
 
+You can't do anything with torsors that have a different tag.
+
 More formally: the library provides a final class 
-template *torsor\<typename B>*. 
+template *torsor\<typename B, typename T>*. 
 The type B must have a constructor that can be called with a single value 0.
 
-The library supports the following operations:
+The library supports the following operations for
+torsors with the same tag type T:
 
 - default constructor, copy constructor, assignment operator
 
@@ -528,6 +532,12 @@ it produces something that:
    yields an absolute (torsor) temperature.
    
 This is how the library behaves, buy I doubt that is useful to anyone.
+
+------------------------------------------------------------------------------
+
+# Usage example: address ranges
+
+TBW
 
 ------------------------------------------------------------------------------
 
