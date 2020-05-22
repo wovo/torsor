@@ -568,4 +568,5 @@ class.
 - eliminate the torsor(int,42) hack
 - move constructor??
 - write a matching unit library (needs template value parameters?)
+- check constructor prerequisites?
 

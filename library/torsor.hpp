@@ -20,14 +20,14 @@
 // this file contains Doxygen lines
 /// @file
 
-// Doxygen doeesn't understand conecpts or even the
+// Doxygen doeesn't understand concepts or even the
 // __attribute__((always_inline)), so those are put
 // in @cond INTERNAL / @endcond blocks.
 
 
 // ==========================================================================
 //
-// concepts for protecting the tensor operators
+// concepts for protecting the torsor operators
 //
 // I use the phrase 'can be ... with X' to refer to a right operand X.
 //
@@ -44,98 +44,98 @@ namespace torsor_concepts {
 
 // concept for the torsor copy constructor
 template< typename V, typename W >
-concept bool can_be_constructed_from
+concept can_be_constructed_from
 = requires ( W w ) {  
    V( w );
 };
 
 // concept for the torsor assignment operator
 template< typename V, typename W >
-concept bool can_be_assigned_from
+concept can_be_assigned_from
 = requires ( V & v, W w ) {  
    v = w;
 };
 
 // conecpt for the ( + torsor ) operator
 template< typename V >
-concept bool can_be_plussed
+concept can_be_plussed
 = requires ( V v ) {  
    ( + v );
 };
 
 // conecpt for the ( torsor + value ) operator
 template< typename V, typename W >
-concept bool can_be_added_with_value
+concept can_be_added_with_value
 = requires ( V v, W w ) {  
    ( v + w );
 };
 
 // concept for the ( torsor - value ) operators
 template< typename V, typename W >
-concept bool can_be_subtracted_with_value 
+concept can_be_subtracted_with_value 
 = requires ( V v, W w ) {  
    ( v - w );
 };
 
 // concept for the ( torsor += value ) operator
 template< typename V, typename W >
-concept bool can_be_update_added_with_value 
+concept can_be_update_added_with_value 
 = requires ( V v, W w ) {  
    ( v += w );
 };
 
 // concept for the ( torsor -= value ) operator
 template< typename V, typename W >
-concept bool can_be_update_subtracted_with_value 
+concept can_be_update_subtracted_with_value 
 = requires ( V v, W w ){
    ( v -= w );
 };
 
 // concept for the ( torsor == torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_equal 
+concept can_be_compared_equal 
 = requires ( V v, W w ){
    ( v == w );
 };
 
 // concept for the ( torsor != torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_unequal 
+concept can_be_compared_unequal 
 = requires ( V v, W w ){
    ( v != w );
 };
 
 // concept for the ( torsor > torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_larger
+concept can_be_compared_larger
 = requires ( V v, W w ){
    ( v > w );
 };
 
 // concept for the ( torsor >= torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_larger_or_equal
+concept can_be_compared_larger_or_equal
 = requires ( V v, W w ){
    ( v >= w );
 };
 
 // concept for the ( torsor < torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_smaller
+concept can_be_compared_smaller
 = requires ( V v, W w ){
    ( v < w );
 };
 
 // concept for the ( torsor >= torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_smaller_or_equal
+concept can_be_compared_smaller_or_equal
 = requires ( V v, W w ){
    ( v <= w );
 };
 
 // concept for the ( COUT << torsor ) operator
 template< typename COUT, typename W >
-concept bool can_be_printed_to 
+concept can_be_printed_to 
 = requires( COUT cout, char c, W w ){
    ( cout << c );
    ( cout << w );
@@ -148,7 +148,7 @@ concept bool can_be_printed_to
 
 // ==========================================================================
 //
-// the tensor template class itself
+// the torsor template class itself
 //
 // ==========================================================================
 
@@ -178,7 +178,7 @@ template< typename T, typename M = void >
 class torsor final {  
 private:
 
-   // (only) torsors of (any type) can 
+   // (only) torsors (of any type) can 
    // - access the value of torsors of any (same or other) type
    // - create non-zero torsors of any (same or other) type
    template<typename, typename> friend class torsor; 
@@ -226,7 +226,7 @@ public:
 
    /// assign a torsor from another torsor
    ///
-   /// Copy the vaue from another torsor, which must have a base type
+   /// Copy the value from another torsor, which must have a base type
    /// that can be assigned to our base type.
    template< typename U >
    ///@cond INTERNAL
@@ -254,12 +254,12 @@ public:
    __attribute__((always_inline))
    ///@endcond
    {
-      return ::torsor< T, M >( + value ); 
+      return ::torsor< decltype( + value ), M >( + value ); 
    }
 
    /// add a torsor with a value
    ///
-   /// Add a value to ourselve.
+   /// Add a value to ourself.
    /// The base types of our torsor and the value must be addable.
    /// The result is a torsor of the type 
    /// and with the value of that addition.
@@ -274,10 +274,10 @@ public:
 
    /// update add a torsor with a value
    ///
-   /// Add a value into ourselve.
+   /// Add a value into ourself.
    /// The base types of our torsor and the value 
    /// must be update addable.
-   /// The result is a ourselve, updated appropriately.
+   /// The result is a ourself, updated appropriately.
    template< typename U >
    ///@cond INTERNAL
    requires torsor_concepts::can_be_update_added_with_value< T, U >
@@ -297,7 +297,7 @@ public:
 
    /// subtract a torsor with a value
    ///
-   /// Subtract a value from ourselve.
+   /// Subtract a value from ourself.
    /// The base types of our torsor and the value must be subtractable.
    /// The result is a torsor of the type 
    /// and with the value of that subtraction.
@@ -312,7 +312,7 @@ public:
    
    /// subtract two torsors
    ///
-   /// Subtract a torsor from ourselve.
+   /// Subtract a torsor from ourself.
    /// The base types of our torsor and the other torsor 
    /// must be subtractable.
    /// The result is of the type and has the value of that subtraction.
@@ -327,10 +327,10 @@ public:
    
    /// update subtract a torsor with a value
    ///
-   /// Subtract a value into ourselve.
+   /// Subtract a value into ourself.
    /// The base types of our torsor and the value 
    /// must be update subtractable.
-   /// The result is a ourselve, updated appropriately.   
+   /// The result is a ourself, updated appropriately.   
    template< typename U >
    ///@cond INTERNAL
    requires torsor_concepts::can_be_update_subtracted_with_value< T, U >
