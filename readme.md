@@ -5,8 +5,10 @@
 Torsor is a very small C++ one-header one-class library 
 for expressing and enforcing the difference between relative 
 and absolute (anchored) values, aka torsors.
-Much like a unit system, this library uses the type system 
+Much like a compile-time unit system like boost::units, 
+this library uses the type system 
 to help you eliminate erroneous operations at compile-time.
+
 It can also help to make an API simpler and more elegant
 by making the difference between relative and absolute 
 values explicit in the type system.
@@ -28,7 +30,7 @@ I hope it doesn't pozone you.
 https://www.boost.org/users/license.html)
 <BR>documentation license (this file and the other .md files): [CC BY-SA 2.5](
 https://creativecommons.org/licenses/by-sa/2.5/)
-<BR>Though not required, I appreciate being informed of any use of tis library,
+<BR>Though not required, I appreciate being informed of any use of this library,
 and feedback is of course also welcomed.
 
 ### Requires
@@ -58,7 +60,7 @@ There are two subtly distinct notions of time:
 
 It makes sense to add two durations 
 (10 seconds + 5 seconds = 15 seconds) but it makes no sense
-to add two moments ( today + tomorrow, or now + 10 minutes ago).
+to add two moments (what is today + tomorrow, or now + 10 minutes ago?).
 Just like adding meters to seconds doesn't make any sense,
 adding two time moments doesn't make any sense.
 Subtracting two moments on the other hand does make sense,
@@ -67,9 +69,9 @@ but the result is a duration, rather than a moment in time.
 In terms of scales, for a value type that denotes a ratio scale value 
 (a value for which addition yields a value on the same scale), 
 a torsor of that type is a corresponding interval scale 
-(anchored) type.
+(anchored) type (for which additrion makes no sense).
 
-In mathematical terms, the set of moments in time is a
+In mathematical terms, the set of moments in time is the
 *torsor* of the set of time durations.
 
 Examples of ratio scales and corresponding torsors 
@@ -82,20 +84,21 @@ Examples of ratio scales and corresponding torsors
 | distance vector           | location                         |
 
 Whether a scale is a torsor or not has nothing to do with its
-unit: in a unit system (like SI) a ratio type and its torsor have the 
-same unit. 
+unit: in a unit system (like SI) a basic (ration) 
+type and its torsor have the same unit. 
 
-But just like adding two values that have different SI units 
+As said, just like adding two values that have different SI units 
 makes no sense, adding two torsor values makes no sense.
 The torsor class template uses the type system to block
 such meaningless operations at compile time. 
 It is designed to have zero runtime overhead.
 
-Having different types for a ratio scale and its torsor
-can make an API more elegant, because it makes the difference
+Having different types for a basic (ratio scale) type 
+and its torsor can make an API more elegant, 
+because it making the difference
 between relative and absolute values
-explicit in the type system, instead of requiring two 
-functions with different names.
+explicit in the type system enables overfloading, 
+instead of requiring two functions with different names.
 
 ------------------------------------------------------------------------------
 
@@ -206,10 +209,10 @@ It is a big library, aparently without a gentle introduction.
 Joke:
 
 > The set of people who fully understand
-> unit tehory is small, as is the set of people who understand
+> unit thory is small, as is the set of people who understand
 > C++11 enough to write (and some people say *use*) such a library.
 > The intersection of those two sets contains exactly two people,
-> who happen to be the two authors of boots::units.
+> who happen to be the authors of boots::units.
 
 
 ## torsors
@@ -245,7 +248,8 @@ and get that same value as a result. In fact,
 you can no longer add such 'anchored' values at all.
 
 Another interpretation is that by anchoring 
-(arbirarily defining a zero) you have added some unknown amount
+(arbirarily defining a zero) you have added some 
+arbirary and unknown amount
 to all values,
 which makes addition meaningless because the sum
 would contain that unknown amount twice.
@@ -332,8 +336,8 @@ on the base value: ( t op c ) or (c op t ).
   ( s << b )
   
   This operation is provided if and only if
-s provides a << operator for a char, and 
-a - operator and a << operator for b.
+s provides the << operator for char, and 
+the - operator and the << operator for b.
 The b value is printed, prefixed by a '@' character.
 
   This print operator is provided for debug-logging purposes.
@@ -346,7 +350,7 @@ The requirements required for providing each operation
 are checked by concepts.
 
 All operators are inlined, and are 
-const and constexpr, where appropriate.
+const and constexpr where appropriate.
 There are currently no exception annotations 
 (My main interest is small micro-controllers without a heap,
 so I always build with -fno-exceptions).
@@ -413,8 +417,8 @@ amount of time, and one that takes a moment in time as argument,
 and waits until that moment has arrived. 
 The argument of the first function is a *duration* (an amount of time),
 the argument of the second function is a *moment* in time.
-Making the argument of the second function a torsor 
-the two functions can be overloaded.
+By making the argument of the second function a torsor 
+the two functions can be overloaded:
 
 ```C++
    // wait for the specified amount of time
@@ -454,11 +458,12 @@ ratio value range and its corresponding torsor (interval value range).
 # Usage example: rectangle
 
 A graphics library will have a type *location* that specifies 
-a place on the graphics screen. 
+a place on the graphics screen, probably as the (integer or floating) 
+x and y coordinates.
 A class that represents a rectangle object on the screen will
 take one argument to specify the start (upper left) point of the rectangle, 
 and one more argument. 
-But what does that second argument specify; 
+But what does that second argument specify:
 
 - the end (lower right) point, or 
 

@@ -18,7 +18,7 @@
 #define torsor_hpp
 
 // this file contains Doxygen lines
-/// @file
+/// @file 
 
 // Doxygen doeesn't understand concepts or even the
 // __attribute__((always_inline)), so those are put
